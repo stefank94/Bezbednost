@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 
 @Entity
 public class OrganizationUser extends User {
+
+	private static final String ROLE = "ORGANIZATION";
 	
 	@Column(name = "name", nullable = false)
 	protected String name;
@@ -17,6 +19,12 @@ public class OrganizationUser extends User {
 	
 	
 	public OrganizationUser() { }
+
+
+	@Override
+	public String getRole(){
+		return ROLE;
+	}
 
 
 	public String getName() {

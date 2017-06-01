@@ -22,10 +22,10 @@ public abstract class User extends AbstractEntity {
 	
 	@Column(name = "signupdate", nullable = false)
 	protected Date signupDate;
-	
-	
+
 	public User() { }
 
+	public abstract String getRole();
 
 	public String getEmail() {
 		return email;
@@ -65,8 +65,5 @@ public abstract class User extends AbstractEntity {
 	public void setSignupDate(Date signupDate) {
 		this.signupDate = signupDate;
 	}
-	
-	
-
 
 }

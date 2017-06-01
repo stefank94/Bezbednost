@@ -29,6 +29,8 @@
                 return;
             }
 
+            console.log(vm.loginData);
+
             userService.login(vm.loginData)
                 .then(function(data){
                     userService.setLoggedInUser(data.data);
@@ -36,7 +38,7 @@
                     $window.location.href = '/#/home';
                 })
                 .catch(function(error){
-                    toastr.error(error.error.message);
+                    toastr.error(error.data.message);
                 });
         }
 

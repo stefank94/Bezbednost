@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 @Entity
 public class PersonUser extends User {
 
+	private static final String ROLE = "PERSON";
+
 	@Column(name = "name", nullable = false)
 	protected String name;
 	
@@ -15,6 +17,11 @@ public class PersonUser extends User {
 	
 	public PersonUser() { }
 
+
+	@Override
+	public String getRole(){
+		return ROLE;
+	}
 
 	public String getName() {
 		return name;
