@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="certApp">
+	<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <title>Cert Auth App</title>
+
+        <link href="/webjars/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="/webjars/bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+        <link href="/webjars/angular-toastr/angular-toastr.css" rel="stylesheet">
+        <script src="/webjars/jquery/jquery.min.js"></script>
+        <script src="/webjars/angularjs/angular.min.js"></script>
+        <script src="/webjars/angularjs/angular-route.min.js"></script>
+        <script src="/webjars/angular-ui-bootstrap/ui-bootstrap.min.js"></script>
+        <script src="/webjars/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"></script>
+        <script src="/webjars/angular-toastr/angular-toastr.min.js"></script>
+        <script src="/webjars/angular-toastr/angular-toastr.tpls.min.js"></script>
+
+
+        <script src="static/js/app.js"></script>
+        <script src="static/js/app.constants.js"></script>
+        <script src="static/js/app.routes.js"></script>
+        <script src="static/js/controllers/home.controller.js"></script>
+        <script src="static/js/controllers/login.controller.js"></script>
+        <script src="static/js/services/user.service.js"></script>
+
+        <link href="static/css/main.css" rel="stylesheet">
+
+    </head>
+    <body>
+        <div  class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container" ng-controller="LoginController as loginCtrl">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/#/home">CertAuth</a>
+                    <a class="navbar-brand" href="/#/">Go to login</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right" >
+                    <li ng-show="loginCtrl.isAuthenticated()" ng-click="loginCtrl.logout()"><a><button type="button" class="btn btn-warning">Logout</button></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <br><br><br>
+
+        <div id="main-content" ng-view>
+            <!-- CONTENT GOES HERE -->
+        </div>
+    </body>
+</html>
