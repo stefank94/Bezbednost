@@ -6,6 +6,7 @@ import app.beans.CertificateData;
 import app.beans.CertificateSigningRequest;
 import app.repository.CARepository;
 import app.repository.CSRRepository;
+import app.repository.CertificateDataRepository;
 import app.repository.CertificateRepository;
 import app.service.CertificateService;
 import app.util.*;
@@ -42,6 +43,9 @@ public class CertificateServiceImpl implements CertificateService {
     @Autowired
     private CARepository caRepository;
 
+    @Autowired
+    private CertificateDataRepository certificateDataRepository;
+
     // -------------------------------------------------
 
     @Override
@@ -66,7 +70,7 @@ public class CertificateServiceImpl implements CertificateService {
                     request.getCertificateData().getKeyAlgorithm());
 
             SecureRandom random = new SecureRandom();
-            int randomNumber = random.nextInt();
+            int randomNumber = random.nextInt(Integer.MAX_VALUE - 1);
 
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerX500,
                     new BigInteger(Integer.toString(randomNumber)),
@@ -99,6 +103,7 @@ public class CertificateServiceImpl implements CertificateService {
             certificate.setKeyStoreAlias(credentials.getKeyStoreAlias());
 
             saveCertificateToKeyStore(certificate, x509Certificate);
+            certificateDataRepository.save(certificate.getCertificateData());
             Certificate saved = certificateRepository.save(certificate);
 
             return saved;
@@ -121,18 +126,16 @@ public class CertificateServiceImpl implements CertificateService {
 
 
             PrivateKey issuerPrivateKey = null;
-            PublicKey issuerPublicKey = null;
+            KeyPair issuerKeyPair = null;
             if (issuer != null) {
                 KeyStoreReader keyStoreReader = new KeyStoreReader();
                 issuerPrivateKey = keyStoreReader.readPrivateKey(issuer);
-                issuerPublicKey = getPublicKey(subjectData.getPublicKey(), subjectData.getKeyAlgorithm());
             } else {
                 KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
                 SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
                 keyGen.initialize(2048, random);
-                KeyPair keyPair = keyGen.generateKeyPair();
-                issuerPrivateKey = keyPair.getPrivate();
-                issuerPublicKey = keyPair.getPublic();
+                issuerKeyPair = keyGen.generateKeyPair();
+                issuerPrivateKey = issuerKeyPair.getPrivate();
             }
 
             ContentSigner contentSigner = builder.build(issuerPrivateKey);
@@ -151,12 +154,17 @@ public class CertificateServiceImpl implements CertificateService {
             X500Name subjectX500 = X500NameUtility.makeX500Name(subjectData);
 
             SecureRandom random = new SecureRandom();
-            int randomNumber = random.nextInt();
+            int randomNumber = random.nextInt(Integer.MAX_VALUE - 1);
 
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG", "SUN");
-            keyGen.initialize(2048, secureRandom);
-            KeyPair subjectKeyPair = keyGen.generateKeyPair();
+            KeyPair subjectKeyPair = null;
+            if (issuer != null) {
+                KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+                SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG", "SUN");
+                keyGen.initialize(2048, secureRandom);
+                subjectKeyPair = keyGen.generateKeyPair();
+            } else
+                subjectKeyPair = issuerKeyPair;
+            subjectData.setPublicKey(Base64Utility.encode(subjectKeyPair.getPublic().getEncoded()));
 
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerX500,
                     new BigInteger(Integer.toString(randomNumber)),
@@ -185,22 +193,26 @@ public class CertificateServiceImpl implements CertificateService {
             certificate.setKeyStorePassword(credentials.getKeyStorePassword());
             certificate.setKeyStoreAlias(credentials.getKeyStoreAlias());
             saveCertificateToKeyStore(certificate, x509Certificate);
-            certificateRepository.save(certificate);
 
             KeyStoreCredentials privateKeyCredentials = generateKeyStoreCredentialsForCertificate(
                     true,
                     Integer.toString(randomNumber));
             CertificateAuthority newCA = new CertificateAuthority();
             newCA.setCertificate(certificate);
-            newCA.setIssuer(issuer);
             newCA.setKeyStoreAlias(privateKeyCredentials.getKeyStoreAlias());
             newCA.setKeyStoreFileName(privateKeyCredentials.getKeyStoreFileName());
             newCA.setKeyStorePassword(privateKeyCredentials.getKeyStorePassword());
             newCA.setPrivateKeyPassword(privateKeyCredentials.getPrivateKeyPassword());
+            if (issuer != null)
+                certificate.setIssuer(issuer);
+            else
+                certificate.setIssuer(newCA);
 
-            CertificateAuthority saved = caRepository.save(newCA);
+            CertificateAuthority savedCA = caRepository.save(newCA);
 
-            return saved;
+            savePrivateKeyToStore(savedCA, subjectKeyPair.getPrivate(), x509Certificate);
+
+            return savedCA;
 
         } catch(OperatorCreationException e){
             e.printStackTrace();

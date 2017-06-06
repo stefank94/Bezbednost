@@ -1,15 +1,16 @@
 package app.beans;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class CertificateAuthority extends AbstractEntity {
 
     @ManyToOne
-    @JoinColumn(name = "issuer", referencedColumnName = "id")
+    @JoinColumn(name = "issuer")
     protected CertificateAuthority issuer;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false, name = "certificate", referencedColumnName = "id")
     protected Certificate certificate;
 

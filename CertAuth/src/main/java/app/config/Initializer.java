@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import java.security.Security;
 
 @Component
 public class Initializer implements InitializingBean {
@@ -21,6 +21,8 @@ public class Initializer implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
         if (setupCAsOnStartup){
             CertificateData data = new CertificateData();
             data.setCommonName("My Root CA");
@@ -33,8 +35,13 @@ public class Initializer implements InitializingBean {
             data.setKeyAlgorithm("RSA");
             data.setOrganization("Root CA Organization");
             data.setOrganizationalUnit("Level 1");
-
             CertificateAuthority root = certificateService.generateRootCA(data);
+
+            data = new CertificateData();
+            data.setCA(true);
+            data.setCountryCode("RS");
+            data.setKeyAlgorithm("RSA");
+            data.setOrganization("Root CA Organization");
             data.setCommonName("Intermediate CA 1");
             data.setUid("int1");
             data.setEmailAddress("inter1@root.com");
@@ -43,6 +50,11 @@ public class Initializer implements InitializingBean {
             data.setOrganizationalUnit("Level 2");
             certificateService.generateCertificateAuthority(root, data);
 
+            data = new CertificateData();
+            data.setCA(true);
+            data.setCountryCode("RS");
+            data.setKeyAlgorithm("RSA");
+            data.setOrganization("Root CA Organization");
             data.setCommonName("Intermediate CA 2");
             data.setUid("int2");
             data.setEmailAddress("inter2@root.com");
@@ -51,6 +63,11 @@ public class Initializer implements InitializingBean {
             data.setOrganizationalUnit("Level 2");
             certificateService.generateCertificateAuthority(root, data);
 
+            data = new CertificateData();
+            data.setCA(true);
+            data.setCountryCode("RS");
+            data.setKeyAlgorithm("RSA");
+            data.setOrganization("Root CA Organization");
             data.setCommonName("Intermediate CA 3");
             data.setUid("int3");
             data.setEmailAddress("inter3@root.com");

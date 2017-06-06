@@ -7,15 +7,15 @@ import java.util.Date;
 public class Certificate extends AbstractEntity {
 
     @ManyToOne
-    @JoinColumn(name = "issuer", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "issuer", referencedColumnName = "id")
     protected CertificateAuthority issuer;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "certificatedata", nullable = false)
     protected CertificateData certificateData;
 
     @ManyToOne
-    @JoinColumn(name = "user", nullable = false)
+    @JoinColumn(name = "user")
     protected User user;
 
     @Column(name = "validfrom", nullable = false)

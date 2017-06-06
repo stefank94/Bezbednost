@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 @Entity
 public class CertificateData extends AbstractEntity {
 
-    @Column(name = "publickey", nullable = false)
+    @Column(name = "publickey", nullable = false, length = 2048)
     protected String publicKey;
 
     @Column(name = "keyalgorithm", nullable = false)

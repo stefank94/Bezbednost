@@ -2,10 +2,7 @@ package app.util;
 
 import app.beans.CertificateAuthority;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -14,7 +11,7 @@ public class KeyStoreReader {
 
     private KeyStore keyStore;
 
-    private static final String folder = "keystores/";
+    private static final String folder = "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "keystores" + File.separator;
 
     public KeyStoreReader() {
         try {
@@ -29,7 +26,7 @@ public class KeyStoreReader {
     public Certificate readCertificate(String keyStoreFile, String keyStorePass, String alias) {
         try {
             KeyStore ks = KeyStore.getInstance("JKS", "SUN");
-            BufferedInputStream in = new BufferedInputStream(new FileInputStream(folder + keyStoreFile));
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             ks.load(in, keyStorePass.toCharArray());
 
             if(ks.isKeyEntry(alias)) {
@@ -81,7 +78,7 @@ public class KeyStoreReader {
     }
 
     public PrivateKey readPrivateKey(CertificateAuthority cA){
-        return readPrivateKey(folder + cA.getKeyStoreFileName(), cA.getKeyStorePassword(), cA.getKeyStoreAlias(), cA.getPrivateKeyPassword());
+        return readPrivateKey(cA.getKeyStoreFileName(), cA.getKeyStorePassword(), cA.getKeyStoreAlias(), cA.getPrivateKeyPassword());
     }
 
 }
