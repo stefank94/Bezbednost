@@ -1,29 +1,43 @@
 package app.config;
 
-import app.beans.CertificateAuthority;
+import app.beans.Admin;
 import app.beans.CertificateData;
-import app.service.CertificateService;
+import app.service.AdminService;
+import app.service.CAService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Security;
+import java.util.Date;
 
 @Component
 public class Initializer implements InitializingBean {
+    /*
+    Sets up data for the application.
+     */
 
-    @Value("${setupCAsOnStartup}")
-    private boolean setupCAsOnStartup;
+    @Value("${initializeRootCA}")
+    private boolean initializeRootCA;
 
     @Autowired
-    private CertificateService certificateService;
+    private CAService caService;
+
+    @Autowired
+    private AdminService adminService;
+
+    // -------------------------------------------
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        // Add Bouncy Castle Provider
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-        if (setupCAsOnStartup){
+        if (initializeRootCA){
+            if (caService.getRootCA() != null) // Don't generate root CA if it already exists
+                return;
+
             CertificateData data = new CertificateData();
             data.setCommonName("My Root CA");
             data.setUid("myrootca");
@@ -35,46 +49,18 @@ public class Initializer implements InitializingBean {
             data.setKeyAlgorithm("RSA");
             data.setOrganization("Root CA Organization");
             data.setOrganizationalUnit("Level 1");
-            CertificateAuthority root = certificateService.generateRootCA(data);
+            caService.generateRootCA(data);
 
-            data = new CertificateData();
-            data.setCA(true);
-            data.setCountryCode("RS");
-            data.setKeyAlgorithm("RSA");
-            data.setOrganization("Root CA Organization");
-            data.setCommonName("Intermediate CA 1");
-            data.setUid("int1");
-            data.setEmailAddress("inter1@root.com");
-            data.setGivenName("Intermediate");
-            data.setSurname("CA 1");
-            data.setOrganizationalUnit("Level 2");
-            certificateService.generateCertificateAuthority(root, data);
-
-            data = new CertificateData();
-            data.setCA(true);
-            data.setCountryCode("RS");
-            data.setKeyAlgorithm("RSA");
-            data.setOrganization("Root CA Organization");
-            data.setCommonName("Intermediate CA 2");
-            data.setUid("int2");
-            data.setEmailAddress("inter2@root.com");
-            data.setGivenName("Intermediate");
-            data.setSurname("CA 2");
-            data.setOrganizationalUnit("Level 2");
-            certificateService.generateCertificateAuthority(root, data);
-
-            data = new CertificateData();
-            data.setCA(true);
-            data.setCountryCode("RS");
-            data.setKeyAlgorithm("RSA");
-            data.setOrganization("Root CA Organization");
-            data.setCommonName("Intermediate CA 3");
-            data.setUid("int3");
-            data.setEmailAddress("inter3@root.com");
-            data.setGivenName("Intermediate");
-            data.setSurname("CA 3");
-            data.setOrganizationalUnit("Level 2");
-            certificateService.generateCertificateAuthority(root, data);
         }
+
+        if (!adminService.adminExists()){
+            Admin admin = new Admin();
+            admin.setEmail("admin@admin.com");
+            admin.setPassword("123");
+            admin.setSalt("");
+            admin.setSignupDate(new Date());
+            adminService.create(admin);
+        }
+
     }
 }

@@ -71,6 +71,12 @@ public class KeyStoreWriter {
         }
     }
 
+    public void saveCertificateToKeyStore(app.beans.Certificate cert, X509Certificate x509){
+        loadKeyStore(null, cert.getKeyStorePassword().toCharArray());
+        writeCertificate(cert.getKeyStoreAlias(), x509);
+        saveKeyStore(cert.getKeyStoreFileName(), cert.getKeyStorePassword().toCharArray());
+    }
+
 
 
 }

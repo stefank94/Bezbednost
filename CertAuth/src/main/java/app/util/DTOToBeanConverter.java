@@ -1,13 +1,7 @@
 package app.util;
 
-import app.beans.Admin;
-import app.beans.OrganizationUser;
-import app.beans.PersonUser;
-import app.beans.User;
-import app.dto.AdminDTO;
-import app.dto.OrganizationUserDTO;
-import app.dto.PersonUserDTO;
-import app.dto.UserDTO;
+import app.beans.*;
+import app.dto.*;
 
 public class DTOToBeanConverter {
 
@@ -17,10 +11,8 @@ public class DTOToBeanConverter {
         User user;
         if (dto instanceof AdminDTO)
             user = adminDTOToBean((AdminDTO) dto);
-        else if (dto instanceof PersonUserDTO)
-            user = personUserDTOToBean((PersonUserDTO) dto);
         else
-            user = organizationUserDTOToBean((OrganizationUserDTO) dto);
+            user = clientDTOToBean((ClientDTO) dto);
         return user;
     }
 
@@ -33,27 +25,28 @@ public class DTOToBeanConverter {
         return admin;
     }
 
-    public static PersonUser personUserDTOToBean(PersonUserDTO dto){
+    public static Client clientDTOToBean(ClientDTO dto){
         if (dto == null)
             return null;
-        PersonUser person = new PersonUser();
-        person.setEmail(dto.getEmail());
-        person.setPassword(dto.getPassword());
-        person.setLastName(dto.getLastName());
-        person.setName(dto.getName());
-        return person;
+        Client client = new Client();
+        client.setEmail(dto.getEmail());
+        client.setPassword(dto.getPassword());
+        return client;
     }
 
-    public static OrganizationUser organizationUserDTOToBean(OrganizationUserDTO dto){
+    public static CertificateData certificateDataDTOToBean(CertificateDataDTO dto){
         if (dto == null)
             return null;
-        OrganizationUser org = new OrganizationUser();
-        org.setName(dto.getName());
-        org.setPassword(dto.getPassword());
-        org.setEmail(dto.getEmail());
-        org.setAddress(dto.getAddress());
-        org.setCountry(dto.getCountry());
-        return org;
+        CertificateData data = new CertificateData();
+        data.setOrganization(dto.getOrganization());
+        data.setOrganizationalUnit(dto.getOrganizationalUnit());
+        data.setSurname(dto.getSurname());
+        data.setGivenName(dto.getGivenName());
+        data.setCommonName(dto.getCommonName());
+        data.setCountryCode(dto.getCountryCode());
+        data.setEmailAddress(dto.getEmailAddress());
+        data.setUid(dto.getUid());
+        return data;
     }
 
 }

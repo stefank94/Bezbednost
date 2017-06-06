@@ -12,8 +12,4 @@ public interface CertificateService {
 
     Certificate generateCertificate(CertificateAuthority cA, CertificateSigningRequest cr);
 
-    CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateData data);
-
-    CertificateAuthority generateRootCA(CertificateData data);
-
 }

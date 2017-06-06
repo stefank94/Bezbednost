@@ -1,5 +1,8 @@
 package app.util;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 public class KeyStoreCredentials {
 
     private String keyStoreFileName;
@@ -8,6 +11,22 @@ public class KeyStoreCredentials {
     private String privateKeyPassword;
 
     public KeyStoreCredentials() { }
+
+
+    public static KeyStoreCredentials generateKeyStoreCredentialsForCertificate(boolean forPrivateKey, String identifier){
+        KeyStoreCredentials credentials = new KeyStoreCredentials();
+        SecureRandom random = new SecureRandom();
+        if (forPrivateKey) {
+            credentials.setKeyStoreFileName(identifier + "_certificate");
+            credentials.setPrivateKeyPassword(new BigInteger(130, random).toString(32));
+        } else
+            credentials.setKeyStoreFileName(identifier + "_PK");
+        credentials.setKeyStoreAlias(new BigInteger(130, random).toString(32));
+        credentials.setKeyStorePassword(new BigInteger(130, random).toString(32));
+
+        return credentials;
+    }
+
 
     public String getKeyStoreFileName() {
         return keyStoreFileName;

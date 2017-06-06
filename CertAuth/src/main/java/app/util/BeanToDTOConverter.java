@@ -16,10 +16,8 @@ public class BeanToDTOConverter {
         UserDTO dto;
         if (user instanceof Admin)
             dto = adminToDTO((Admin) user);
-        else if (user instanceof PersonUser)
-            dto = personUserToDTO((PersonUser) user);
         else
-            dto = organizationUserToDTO((OrganizationUser) user);
+            dto = clientToDTO((Client) user);
         return dto;
     }
 
@@ -33,28 +31,67 @@ public class BeanToDTOConverter {
         return dto;
     }
 
-    public static PersonUserDTO personUserToDTO(PersonUser person){
-        if (person == null)
+    public static ClientDTO clientToDTO(Client client){
+        if (client == null)
             return null;
-        PersonUserDTO dto = new PersonUserDTO();
-        buildAbstractEntityDTO(dto, person);
-        dto.setSignupDate(person.getSignupDate());
-        dto.setEmail(person.getEmail());
-        dto.setLastName(person.getLastName());
-        dto.setName(person.getName());
+        ClientDTO dto = new ClientDTO();
+        buildAbstractEntityDTO(dto, client);
+        dto.setSignupDate(client.getSignupDate());
+        dto.setEmail(client.getEmail());
         return dto;
     }
 
-    public static OrganizationUserDTO organizationUserToDTO(OrganizationUser org){
-        if (org == null)
+    public static CertificateDataDTO certificateDataToDTO(CertificateData data){
+        if (data == null)
             return null;
-        OrganizationUserDTO dto = new OrganizationUserDTO();
-        buildAbstractEntityDTO(dto, org);
-        dto.setName(org.getName());
-        dto.setEmail(org.getEmail());
-        dto.setAddress(org.getAddress());
-        dto.setCountry(org.getCountry());
-        dto.setSignupDate(org.getSignupDate());
+        CertificateDataDTO dto = new CertificateDataDTO();
+        buildAbstractEntityDTO(dto, data);
+        dto.setOrganization(data.getOrganization());
+        dto.setKeyAlgorithm(data.getKeyAlgorithm());
+        dto.setCA(data.isCA());
+        dto.setCommonName(data.getCommonName());
+        dto.setCountryCode(data.getCountryCode());
+        dto.setEmailAddress(data.getEmailAddress());
+        dto.setGivenName(data.getGivenName());
+        dto.setOrganizationalUnit(data.getOrganizationalUnit());
+        dto.setPublicKey(data.getPublicKey());
+        dto.setSurname(data.getSurname());
+        dto.setUid(data.getUid());
+        return dto;
+    }
+
+    public static CertificateDTO certificateToDTO(Certificate cert){
+        if (cert == null)
+            return null;
+        CertificateDTO dto = new CertificateDTO();
+        buildAbstractEntityDTO(dto, cert);
+        dto.setCertificateData(certificateDataToDTO(cert.getCertificateData()));
+        dto.setIssuer(cert.getIssuer() == null ? -1 : cert.getIssuer().getId());
+        dto.setUser(cert.getUser() == null ? null : cert.getUser().getEmail());
+        dto.setValidFrom(cert.getValidFrom());
+        dto.setValidTo(cert.getValidTo());
+        return dto;
+    }
+
+    public static CertificateAuthorityDTO certificateAuthorityToDTO(CertificateAuthority ca){
+        if (ca == null)
+            return null;
+        CertificateAuthorityDTO dto = new CertificateAuthorityDTO();
+        buildAbstractEntityDTO(dto, ca);
+        dto.setIssuer(ca.getIssuer() == null ? -1 : ca.getIssuer().getId());
+        dto.setCertificate(certificateToDTO(ca.getCertificate()));
+        return dto;
+    }
+
+    public static CertificateSigningRequestDTO certificateSigningRequestToDTO(CertificateSigningRequest request){
+        if (request == null)
+            return null;
+        CertificateSigningRequestDTO dto = new CertificateSigningRequestDTO();
+        buildAbstractEntityDTO(dto, request);
+        dto.setUser(request.getUser().getEmail());
+        dto.setState(request.getState());
+        dto.setCertificateData(certificateDataToDTO(request.getCertificateData()));
+        dto.setDate(request.getDate());
         return dto;
     }
 
