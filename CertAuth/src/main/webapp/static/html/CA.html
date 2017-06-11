@@ -1,0 +1,63 @@
+<div class="container" ng-init="caCtrl.getCA()">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>Certificate Authority</h3>&nbsp;
+            <span class="label label-primary" ng-if="caCtrl.CA.issuer == -1">Root CA</span>
+        </div>
+        <hr><br><br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>ID: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{caCtrl.CA.id}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Issuer: </label>
+            </div>
+            <div class="col-md-6" ng-if="caCtrl.CA.issuer != -1">
+                <label><a href="/#/ca/{{caCtrl.CA.issuer}}">See issuer</a></label>
+            </div>
+            <div class="col-md-6" ng-if="caCtrl.CA.issuer == -1">
+                <label>self</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Valid from: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{caCtrl.CA.certificate.validFrom}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Valid to: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{caCtrl.CA.certificate.validTo}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Certificate: </label>
+            </div>
+            <div class="col-md-6">
+                <a href="/#/certificate/{{caCtrl.CA.certificate.id}}">See certificate <span class="glyphicon glyphicon-file"></span></a>
+            </div>
+        </div>
+        <br><hr><br>
+        <div ng-if="caCtrl.isAdmin()">
+            <div class="row">
+                <div class="col-md-2">
+                    <a href="/#/addChildCA/{{caCtrl.CA.id}}"><button type="button" class="btn btn-success">Add child CA</button></a>
+                </div>
+                <div class="col-md-offset1 col-md-3">
+                    <button type="button" class="btn btn-danger">Revoke certificate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

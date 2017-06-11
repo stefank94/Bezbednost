@@ -26,6 +26,9 @@ public class CertificateAuthority extends AbstractEntity {
     @Column(name = "privatekeypassword")
     protected String privateKeyPassword;
 
+    @Column(name = "bottomca")
+    protected boolean bottomCA;
+
 
     public CertificateAuthority() { }
 
@@ -75,5 +78,13 @@ public class CertificateAuthority extends AbstractEntity {
 
     public void setPrivateKeyPassword(String privateKeyPassword) {
         this.privateKeyPassword = privateKeyPassword;
+    }
+
+    public boolean isBottomCA() {
+        return bottomCA;
+    }
+
+    public void setBottomCA(boolean bottomCA) {
+        this.bottomCA = bottomCA;
     }
 }

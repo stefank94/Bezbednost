@@ -6,6 +6,8 @@ public class CertificateAuthorityDTO extends AbstractEntityDTO {
 
     protected CertificateDTO certificate;
 
+    protected boolean bottomCA;
+
     public CertificateAuthorityDTO() { }
 
     public int getIssuer() {
@@ -22,5 +24,13 @@ public class CertificateAuthorityDTO extends AbstractEntityDTO {
 
     public void setCertificate(CertificateDTO certificate) {
         this.certificate = certificate;
+    }
+
+    public boolean isBottomCA() {
+        return bottomCA;
+    }
+
+    public void setBottomCA(boolean bottomCA) {
+        this.bottomCA = bottomCA;
     }
 }

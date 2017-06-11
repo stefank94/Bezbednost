@@ -3,6 +3,9 @@ package app.util;
 import app.beans.*;
 import app.dto.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BeanToDTOConverter {
 
     public static void buildAbstractEntityDTO(AbstractEntityDTO dto, AbstractEntity ae){
@@ -80,6 +83,7 @@ public class BeanToDTOConverter {
         buildAbstractEntityDTO(dto, ca);
         dto.setIssuer(ca.getIssuer() == null ? -1 : ca.getIssuer().getId());
         dto.setCertificate(certificateToDTO(ca.getCertificate()));
+        dto.setBottomCA(ca.isBottomCA());
         return dto;
     }
 
@@ -93,6 +97,15 @@ public class BeanToDTOConverter {
         dto.setCertificateData(certificateDataToDTO(request.getCertificateData()));
         dto.setDate(request.getDate());
         return dto;
+    }
+
+    public static List<CertificateAuthorityDTO> certificateAuthorityListToDTO(List<CertificateAuthority> list){
+        if (list == null)
+            return null;
+        List<CertificateAuthorityDTO> dtoList = new ArrayList<>();
+        for (CertificateAuthority ca: list)
+            dtoList.add(certificateAuthorityToDTO(ca));
+        return dtoList;
     }
 
 }

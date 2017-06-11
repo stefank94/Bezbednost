@@ -6,19 +6,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .csrf().disable();
+            .antMatcher("/**").authorizeRequests().antMatchers("/api/user/login",
+            "/api/user/logged",	"/webjars/**", "/static/**", "/").permitAll()
+            .antMatchers("/api/ca/create").hasAuthority("ADMIN")
+            .anyRequest().authenticated()
+            .and().exceptionHandling()
+            .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))
+            .and().logout().logoutUrl("/api/user/logout")
+            .deleteCookies("JSESSIONID").logoutSuccessUrl("/").permitAll()
+            .and().csrf().disable();
     }
 
 }

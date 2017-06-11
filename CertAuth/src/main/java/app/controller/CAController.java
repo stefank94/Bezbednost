@@ -11,10 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/ca")
@@ -25,13 +24,30 @@ public class CAController {
 
     // -------------------------
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<CertificateAuthorityDTO> create(@RequestBody CertificateAuthorityDTO dto) throws EntityNotFoundException {
         CertificateAuthority issuer = caService.findById(dto.getIssuer());
         CertificateData data = DTOToBeanConverter.certificateDataDTOToBean(dto.getCertificate().getCertificateData());
-        CertificateAuthority ca = caService.generateCertificateAuthority(issuer, data);
+        CertificateAuthority ca = caService.generateCertificateAuthority(issuer, data, dto.isBottomCA());
         return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityToDTO(ca), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<CertificateAuthorityDTO> findByID(@PathVariable("id") int id) throws EntityNotFoundException {
+        CertificateAuthority ca = caService.findById(id);
+        return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityToDTO(ca), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/root", method = RequestMethod.GET)
+    public ResponseEntity<CertificateAuthorityDTO> findRoot(){
+        CertificateAuthority root = caService.getRootCA();
+        return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityToDTO(root), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/intermediateCAs", method = RequestMethod.GET)
+    public ResponseEntity<List<CertificateAuthorityDTO>> getIntermediateCAs(){
+        List<CertificateAuthority> list = caService.getIntermediateCAs();
+        return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityListToDTO(list), HttpStatus.OK);
     }
 
 }

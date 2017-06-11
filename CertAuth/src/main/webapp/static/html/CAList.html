@@ -1,0 +1,90 @@
+<div class="container" ng-init="caCtrl.getCAs()">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>List of Certificate Authorities</h3>
+        </div>
+        <br><br><br>
+        <div class="row">
+            <h5>Root certificate:</h5>
+        </div>
+        <hr><br>
+        <div class="row card">
+            <div class="col-md-4 card-heading">
+                <label>Name: </label>
+                <br>
+                <label>{{caCtrl.rootCA.certificate.certificateData.commonName}}</label>
+                <br>
+                <span class="label label-primary">Root CA</span>
+            </div>
+            <div class="col-md-6 col-md-offset-1">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Issuer: </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>self</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Valid to: </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>{{caCtrl.rootCA.certificate.validTo}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="/#/ca/{{caCtrl.rootCA.id}}"><button type="button" class="btn btn-default">Details</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+        <div class="row">
+            <h5>Intermediate Certificate Authorities:</h5>
+        </div>
+        <hr><br>
+        <div ng-repeat="ca in caCtrl.CAs">
+            <div class="row card">
+                <div class="col-md-4 card-heading">
+                    <label>Name: </label>
+                    <br>
+                    <label>{{ca.certificate.certificateData.commonName}}</label>
+                </div>
+                <div class="col-md-6 col-md-offset-1">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>ID: </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label>{{ca.id}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Issuer: </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label><a href="/#/ca/{{ca.issuer}}">See issuer</a></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Valid to: </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label>{{caCtrl.rootCA.certificate.validTo}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="/#/ca/{{ca.id}}"><button type="button" class="btn btn-default">Details</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+</div>

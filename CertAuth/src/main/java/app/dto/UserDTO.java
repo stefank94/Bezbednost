@@ -7,6 +7,7 @@ public class UserDTO extends AbstractEntityDTO {
     protected String email;
     protected String password;
     protected Date signupDate;
+    protected boolean isAdmin = false;
 
     public UserDTO() {}
 
@@ -32,5 +33,13 @@ public class UserDTO extends AbstractEntityDTO {
 
     public void setSignupDate(Date signupDate) {
         this.signupDate = signupDate;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }

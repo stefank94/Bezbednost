@@ -7,6 +7,7 @@
 
         that.loggedInUser = null;
         that.authenticated = false;
+        that.isAdmin = false;
         fetchLoggedInUser();
 
         return {
@@ -16,7 +17,8 @@
             setLoggedInUser: setLoggedInUser,
             isAuthenticated: isAuthenticated,
             logout: logout,
-            getUser: getUser
+            getUser: getUser,
+            isAdmin: isAdmin
         };
         ////////////////
 
@@ -25,6 +27,8 @@
                 .then(function(data){
                     if (data.data != null && data.data != ''){
                         that.loggedInUser = data.data;
+                        if (that.loggedInUser.admin)
+                            that.isAdmin = true;
                         that.authenticated = true;
                     } else {
                         that.loggedInUser = null;
@@ -52,8 +56,11 @@
 
         function setLoggedInUser(user){
             that.loggedInUser = user;
-            if (user != null)
+            if (user != null) {
                 that.authenticated = true;
+                if (user.admin)
+                    that.isAdmin = true;
+            }
             else
                 that.authenticated = false;
         }
@@ -74,6 +81,9 @@
             return $http.get(baseUrl + 'api/user/logout');
         }
 
+        function isAdmin(){
+            return that.isAdmin;
+        }
 
     });
 
