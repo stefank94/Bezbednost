@@ -73,6 +73,7 @@ public class BeanToDTOConverter {
         dto.setUser(cert.getUser() == null ? null : cert.getUser().getEmail());
         dto.setValidFrom(cert.getValidFrom());
         dto.setValidTo(cert.getValidTo());
+        dto.setCa(cert.getCa().getId());
         return dto;
     }
 
@@ -105,6 +106,24 @@ public class BeanToDTOConverter {
         List<CertificateAuthorityDTO> dtoList = new ArrayList<>();
         for (CertificateAuthority ca: list)
             dtoList.add(certificateAuthorityToDTO(ca));
+        return dtoList;
+    }
+
+    public static List<CertificateSigningRequestDTO> certificateSigningRequestListToDTO(List<CertificateSigningRequest> list){
+        if (list == null)
+            return null;
+        List<CertificateSigningRequestDTO> dtoList = new ArrayList<>();
+        for (CertificateSigningRequest req : list)
+            dtoList.add(certificateSigningRequestToDTO(req));
+        return dtoList;
+    }
+
+    public static List<CertificateDTO> certificateListToDTO(List<Certificate> list){
+        if (list == null)
+            return null;
+        List<CertificateDTO> dtoList = new ArrayList<>();
+        for (Certificate cert : list)
+            dtoList.add(certificateToDTO(cert));
         return dtoList;
     }
 

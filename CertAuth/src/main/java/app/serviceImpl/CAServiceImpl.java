@@ -25,6 +25,7 @@ import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class CAServiceImpl implements CAService {
@@ -139,6 +140,8 @@ public class CAServiceImpl implements CAService {
             newCA.setPrivateKeyPassword(privateKeyCredentials.getPrivateKeyPassword());
             newCA.setBottomCA(bottomCA);
 
+            certificate.setCa(newCA);
+
             if (issuer != null) {
                 // set issuer
                 certificate.setIssuer(issuer);
@@ -154,6 +157,8 @@ public class CAServiceImpl implements CAService {
                 certificate.setIssuer(newCA);
 
             CertificateAuthority savedCA = caRepository.save(newCA);
+
+
 
             savePrivateKeyToStore(savedCA, subjectKeyPair.getPrivate(), x509Certificate);
 
@@ -189,6 +194,13 @@ public class CAServiceImpl implements CAService {
     @Override
     public List<CertificateAuthority> getIntermediateCAs() {
         return caRepository.findByIssuerNotNull();
+    }
+
+    @Override
+    public CertificateAuthority getRandomBottomCA() {
+        List<CertificateAuthority> cas = caRepository.findByBottomCA(true);
+        int idx = ThreadLocalRandom.current().nextInt(0, cas.size());
+        return cas.get(idx);
     }
 
     private void savePrivateKeyToStore(CertificateAuthority cA, PrivateKey pk, X509Certificate x509){

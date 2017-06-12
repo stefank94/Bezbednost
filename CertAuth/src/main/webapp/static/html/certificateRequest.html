@@ -1,0 +1,93 @@
+<div class="container" ng-init="req.getCertificateRequest()">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>Certificate Signing Request</h3>&nbsp;
+        </div>
+        <hr><br><br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>ID: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.id}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Date submitted: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.date}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>State: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.state}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Common name: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.certificateData.commonName}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Given name: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.certificateData.givenName}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Surname: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.certificateData.surname}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Organization: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.certificateData.organization}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Organizational unit: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.certificateData.organizationalUnit}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Country code: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.certificateData.countryCode}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Email address: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{reqCtrl.request.certificateData.emailAddress}}</label>
+            </div>
+        </div>
+        <br><hr><br>
+        <div class="row" ng-if="reqCtrl.isAdmin() && reqCtrl.request.status === 'REQUESTED'">
+            <button type="button" class="btn btn-success" ng-click="reqCtrl.approveRequest()">Approve request</button>&nbsp;
+            <button type="button" class="btn btn-danger" ng-click="reqCtrl.rejectRequest()">Reject request</button>
+        </div>
+    </div>
+</div>

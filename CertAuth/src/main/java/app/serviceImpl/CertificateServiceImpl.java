@@ -1,9 +1,8 @@
 package app.serviceImpl;
 
+import app.beans.*;
 import app.beans.Certificate;
-import app.beans.CertificateAuthority;
-import app.beans.CertificateData;
-import app.beans.CertificateSigningRequest;
+import app.exception.EntityNotFoundException;
 import app.repository.CARepository;
 import app.repository.CSRRepository;
 import app.repository.CertificateDataRepository;
@@ -30,6 +29,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
@@ -114,6 +114,19 @@ public class CertificateServiceImpl implements CertificateService {
 
         return null;
 
+    }
+
+    @Override
+    public Certificate findOne(int id) throws EntityNotFoundException {
+        Certificate cert = certificateRepository.findOne(id);
+        if (cert == null)
+            throw new EntityNotFoundException("Certificate not found with ID: " + id);
+        return cert;
+    }
+
+    @Override
+    public List<Certificate> getMyCertificates(User logged) {
+        return certificateRepository.findByUser(logged);
     }
 
     private PublicKey getPublicKey(String publicKeyString, String keyAlgorithm){

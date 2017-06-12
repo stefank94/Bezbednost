@@ -1,0 +1,57 @@
+<div class="container">
+    <div class="col-md-4 col-md-offset-4 card" id="login-div">
+        <div class="row card-heading">
+            <h2 style="text-align: center;">Registration</h2>
+        </div>
+        <form role="form" class="panel-body" ng-submit="loginCtrl.register()">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Email:</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" ng-model="loginCtrl.registrationData.username">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Password:</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="password"  class="form-control" ng-model="loginCtrl.registrationData.password">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Repeat password:</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="password"  class="form-control" ng-model="loginCtrl.registrationData.repeatPassword">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-6">
+                    <button type="submit" class="btn btn-primary pull-right">Register</button>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3 col-md-offset-9">
+                    <a href="/#/login">Login</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+<style>
+    body{
+        background-image: url("static/images/lock.jpg");
+        background-repeat: no-repeat;
+        background-position: right top;
+        background-attachment: fixed;
+        background-size:cover;
+    }cc
+</style>

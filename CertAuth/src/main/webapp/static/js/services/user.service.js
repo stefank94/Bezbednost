@@ -18,7 +18,8 @@
             isAuthenticated: isAuthenticated,
             logout: logout,
             getUser: getUser,
-            isAdmin: isAdmin
+            isAdmin: isAdmin,
+            changePassword: changePassword
         };
         ////////////////
 
@@ -70,7 +71,7 @@
         }
 
         function register(registerData){
-            return $http.post(baseUrl + 'api/user/registration', registerData);
+            return $http.post(baseUrl + 'api/user/register', registerData);
         }
 
         function isAuthenticated(){
@@ -83,6 +84,10 @@
 
         function isAdmin(){
             return that.isAdmin;
+        }
+
+        function changePassword(changePass){
+            return $http.put(baseUrl + 'api/user/changePassword', changePass);
         }
 
     });

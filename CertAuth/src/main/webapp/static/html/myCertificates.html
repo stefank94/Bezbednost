@@ -1,0 +1,40 @@
+<div class="container" ng-init="certCtrl.getCertificates()">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>My Certificates</h3>
+        </div>
+        <br><hr><br>
+        <div ng-repeat="cert in certCtrl.certificates">
+            <div class="row card">
+                <div class="col-md-4 card-heading">
+                    <label>Name: </label>
+                    <br>
+                    <label>{{cert.certificateData.commonName}}</label>
+                </div>
+            </div>
+            <div class="col-md-6 col-md-offset-1">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Issuer: </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label><a href="/#/ca/{{cert.issuer}}">See issuer</a></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Valid to: </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>{{cert.validTo}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="/#/cert/{{cert.id}}"><button type="button" class="btn btn-default">Details</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

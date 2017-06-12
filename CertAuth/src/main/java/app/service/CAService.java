@@ -18,4 +18,6 @@ public interface CAService {
 
     List<CertificateAuthority> getIntermediateCAs();
 
+    CertificateAuthority getRandomBottomCA();
+
 }

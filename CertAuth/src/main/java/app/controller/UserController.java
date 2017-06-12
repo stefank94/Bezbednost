@@ -1,11 +1,16 @@
 package app.controller;
 
+import app.beans.Client;
 import app.beans.User;
 import app.dto.LoginUserDTO;
 import app.dto.TwoStrings;
 import app.dto.UserDTO;
+import app.exception.ActionNotPossibleException;
+import app.exception.EntityAlreadyExistsException;
 import app.exception.EntityNotFoundException;
+import app.exception.NotPermittedException;
 import app.security.SecurityService;
+import app.service.ClientService;
 import app.service.UserService;
 import app.util.BeanToDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +31,9 @@ public class UserController {
     @Autowired
     private SecurityService securityService;
 
+    @Autowired
+    private ClientService clientService;
+
     // -------------------------------------
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -44,6 +52,20 @@ public class UserController {
         User logged = securityService.getLoggedInUser();
         UserDTO dto = BeanToDTOConverter.userToDTO(logged);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public ResponseEntity<UserDTO> register(@RequestBody LoginUserDTO loginUser) throws EntityAlreadyExistsException {
+        Client newClient = clientService.register(loginUser);
+        securityService.autologin(newClient.getEmail(), newClient.getPassword());
+        return new ResponseEntity<>(BeanToDTOConverter.userToDTO(newClient), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/changePassword", method = RequestMethod.PUT)
+    public ResponseEntity changePassword(@RequestBody TwoStrings twoStrings) throws NotPermittedException, ActionNotPossibleException {
+        User loggedInUser = securityService.getLoggedInUser();
+        userService.changePassword(loggedInUser, twoStrings);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

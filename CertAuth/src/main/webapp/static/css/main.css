@@ -21,3 +21,15 @@ hr {
 body{
     font-family: 'Lucida Sans Unicode';
 }
+
+.separator {
+    height: 50px;
+    margin: 0 9px 0 0;
+    /*padding: 0 0 0 9px;*/
+    border-left: 1px solid grey;
+}
+
+.nav.navbar-nav li a:hover{
+    background-color: grey;
+    color: black;
+}

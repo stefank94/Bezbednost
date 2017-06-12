@@ -1,10 +1,10 @@
 (function(){
     'use strict';
 
-    angular.module('certApp').controller('createCAController', createCAController);
-    createCAController.$inject = ['$window', 'toastr', 'caService', '$routeParams'];
+    angular.module('certApp').controller('CreateCAController', CreateCAController);
+    CreateCAController.$inject = ['$window', 'toastr', 'caService', '$routeParams'];
 
-    function createCAController($window, toastr, caService, $routeParams){
+    function CreateCAController($window, toastr, caService, $routeParams){
 
         var vm = this;
 

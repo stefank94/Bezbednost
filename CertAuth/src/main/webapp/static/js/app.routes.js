@@ -28,8 +28,38 @@
             })
             .when('/addChildCA/:id', {
                 templateUrl: 'static/html/createNewCA.html',
-                controller: 'createCAController',
+                controller: 'CreateCAController',
                 controllerAs: 'caCtrl'
+            })
+            .when('/cert/:id', {
+                templateUrl: 'static/html/certificate.html',
+                controller: 'CertController',
+                controllerAs: 'certCtrl'
+            })
+            .when('/registration', {
+                templateUrl: 'static/html/registration.html',
+                controller: 'LoginController',
+                controllerAs: 'loginCtrl'
+            })
+            .when('/profile', {
+                templateUrl: 'static/html/profile.html',
+                controller: 'ProfileController',
+                controllerAs: 'userCtrl'
+            })
+            .when('/myCertificates', {
+                templateUrl: 'static/html/myCertificates.html',
+                controller: 'MyCertificatesController',
+                controllerAs: 'certCtrl'
+            })
+            .when('/requests', {
+                templateUrl: 'static/html/requests.html',
+                controller: 'RequestsController',
+                controllerAs: 'reqCtrl'
+            })
+            .when('/request/:id', {
+                templateUrl: 'static/html/request.html',
+                controller: 'RequestController',
+                controllerAs: 'reqCtrl'
             })
             .otherwise({
                 redirectTo: '/'

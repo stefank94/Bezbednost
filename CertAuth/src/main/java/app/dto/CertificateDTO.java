@@ -6,6 +6,7 @@ public class CertificateDTO extends AbstractEntityDTO {
 
     protected int issuer; // id
     protected CertificateDataDTO certificateData;
+    protected int ca; // id
     protected String user; // email
     protected Date validFrom;
     protected Date validTo;
@@ -50,5 +51,13 @@ public class CertificateDTO extends AbstractEntityDTO {
 
     public void setValidTo(Date validTo) {
         this.validTo = validTo;
+    }
+
+    public int getCa() {
+        return ca;
+    }
+
+    public void setCa(int ca) {
+        this.ca = ca;
     }
 }

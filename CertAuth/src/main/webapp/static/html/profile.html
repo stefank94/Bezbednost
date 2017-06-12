@@ -1,0 +1,19 @@
+<div class="container" class="modal-demo" ng-init="userCtrl.getUser()">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>Profile: {{userCtrl.user.email}}</h3>
+        </div>
+        <br><hr><br>
+        <div class="row">
+            <div class="col-md-3">
+                <button type="button" class="btn btn-default" ng-click="userCtrl.openModal()">Change password</button>
+            </div>
+            <div class="col-md-3">
+                <a href="/#/requests"><button type="button" class="btn btn-primary">My certificate requests</button></a>
+            </div>
+            <div class="col-md-3">
+                <a href="/#/myCertificates"><button type="button" class="btn btn-success">My certificates</button></a>
+            </div>
+        </div>
+    </div>
+</div>

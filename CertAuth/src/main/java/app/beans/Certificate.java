@@ -14,6 +14,9 @@ public class Certificate extends AbstractEntity {
     @JoinColumn(name = "certificatedata", nullable = false)
     protected CertificateData certificateData;
 
+    @OneToOne(mappedBy = "certificate")
+    protected CertificateAuthority ca;
+
     @ManyToOne
     @JoinColumn(name = "user")
     protected User user;
@@ -98,5 +101,13 @@ public class Certificate extends AbstractEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public CertificateAuthority getCa() {
+        return ca;
+    }
+
+    public void setCa(CertificateAuthority ca) {
+        this.ca = ca;
     }
 }

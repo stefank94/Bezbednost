@@ -25,9 +25,16 @@
         <script src="static/js/controllers/CA.controller.js"></script>
         <script src="static/js/controllers/CAList.controller.js"></script>
         <script src="static/js/controllers/createCA.controller.js"></script>
+        <script src="static/js/controllers/cert.controller.js"></script>
+        <script src="static/js/controllers/profile.controller.js"></script>
+        <script src="static/js/controllers/myCertificate.controller.js"></script>
+        <script src="static/js/controllers/requests.controller.js"></script>
+        <script src="static/js/controllers/request.controller.js"></script>
 
         <script src="static/js/services/user.service.js"></script>
         <script src="static/js/services/ca.service.js"></script>
+        <script src="static/js/services/certificate.service.js"></script>
+        <script src="static/js/services/request.service.js"></script>
 
         <link href="static/css/main.css" rel="stylesheet">
 
@@ -36,11 +43,12 @@
         <div  class="navbar navbar-inverse navbar-fixed-top">
             <div class="container" ng-controller="LoginController as loginCtrl">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/#/home">CertAuth</a>
-                    <a class="navbar-brand" href="/#/">Go to login</a>
+                    <a ng-show="loginCtrl.isAuthenticated()" class="navbar-brand" href="/#/home">CertAuth</a>
                 </div>
                 <ul class="nav navbar-nav navbar-right" >
-                    <li ng-show="loginCtrl.isAuthenticated()" ng-click="loginCtrl.logout()"><a><button type="button" class="btn btn-warning">Logout</button></a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()"><a href="/#/profile" class="navbar-brand">Profile</a></li>
+                    <li ng-show="loginCtrl.isAuthenticated()"><div class="separator"></div></li>
+                    <li ng-show="loginCtrl.isAuthenticated()" ng-click="loginCtrl.logout()"><a class="navbar-brand">Log out</a></li>
                 </ul>
             </div>
         </div>
