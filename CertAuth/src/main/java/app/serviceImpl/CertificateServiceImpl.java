@@ -9,6 +9,7 @@ import app.repository.CertificateDataRepository;
 import app.repository.CertificateRepository;
 import app.service.CertificateService;
 import app.util.*;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -20,9 +21,12 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
@@ -42,6 +46,8 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Autowired
     private CertificateDataRepository certificateDataRepository;
+
+    private static final String folder = "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "certificates" + File.separator;
 
     // -------------------------------------------------
 
@@ -91,16 +97,12 @@ public class CertificateServiceImpl implements CertificateService {
             certificate.setIssuer(cA);
             certificate.setValidFrom(notBefore);
             certificate.setValidTo(notAfter);
+            certificate.getCertificateData().setSerialNumber(randomNumber);
 
-            KeyStoreCredentials credentials = KeyStoreCredentials.generateKeyStoreCredentialsForCertificate(
-                    false,
-                    Integer.toString(randomNumber));
-            certificate.setKeyStoreFileName(credentials.getKeyStoreFileName());
-            certificate.setKeyStorePassword(credentials.getKeyStorePassword());
-            certificate.setKeyStoreAlias(credentials.getKeyStoreAlias());
+            // Save the certificate in a .cer file
+            String fileName = writeCerFile(x509Certificate, randomNumber);
+            certificate.setCerFileName(fileName);
 
-            KeyStoreWriter writer = new KeyStoreWriter();
-            writer.saveCertificateToKeyStore(certificate, x509Certificate);
             certificateDataRepository.save(certificate.getCertificateData());
             Certificate saved = certificateRepository.save(certificate);
 
@@ -127,6 +129,26 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public List<Certificate> getMyCertificates(User logged) {
         return certificateRepository.findByUser(logged);
+    }
+
+    @Override
+    public String writeCerFile(X509Certificate cert, int randomNumber) {
+        try {
+            String fileName = folder + randomNumber + ".cer";
+            File file = new File(fileName);
+            file.createNewFile();
+            FileOutputStream os = new FileOutputStream(file, false);
+            os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
+            os.write(Base64.encodeBase64(cert.getEncoded(), true));
+            os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
+            os.close();
+            return fileName;
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch (CertificateEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private PublicKey getPublicKey(String publicKeyString, String keyAlgorithm){

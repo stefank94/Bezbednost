@@ -27,14 +27,8 @@ public class Certificate extends AbstractEntity {
     @Column(name = "validto", nullable = false)
     protected Date validTo;
 
-    @Column(name = "keystorefilename")
-    protected String keyStoreFileName;
-
-    @Column(name = "keystorepassword")
-    protected String keyStorePassword;
-
-    @Column(name = "keystorealias")
-    protected String keyStoreAlias;
+    @Column(name = "cerfilename")
+    protected String cerFileName;
 
 
     public Certificate() { }
@@ -71,28 +65,12 @@ public class Certificate extends AbstractEntity {
         this.validTo = validTo;
     }
 
-    public String getKeyStoreFileName() {
-        return keyStoreFileName;
+    public String getCerFileName() {
+        return cerFileName;
     }
 
-    public void setKeyStoreFileName(String keyStoreFileName) {
-        this.keyStoreFileName = keyStoreFileName;
-    }
-
-    public String getKeyStorePassword() {
-        return keyStorePassword;
-    }
-
-    public void setKeyStorePassword(String keyStorePassword) {
-        this.keyStorePassword = keyStorePassword;
-    }
-
-    public String getKeyStoreAlias() {
-        return keyStoreAlias;
-    }
-
-    public void setKeyStoreAlias(String keyStoreAlias) {
-        this.keyStoreAlias = keyStoreAlias;
+    public void setCerFileName(String cerFileName) {
+        this.cerFileName = cerFileName;
     }
 
     public User getUser() {

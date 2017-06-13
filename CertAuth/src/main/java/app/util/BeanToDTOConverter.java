@@ -59,7 +59,7 @@ public class BeanToDTOConverter {
         dto.setOrganizationalUnit(data.getOrganizationalUnit());
         dto.setPublicKey(data.getPublicKey());
         dto.setSurname(data.getSurname());
-        dto.setUid(data.getUid());
+        dto.setSerialNumber(data.getSerialNumber());
         return dto;
     }
 

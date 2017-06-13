@@ -33,8 +33,8 @@ public class CertificateData extends AbstractEntity {
     @Column(name = "emailaddress")
     protected String emailAddress;
 
-    @Column(name = "uid")
-    protected String uid;
+    @Column(name = "serialNumber")
+    protected int serialNumber;
 
     @Column(name = "isCA", nullable = false)
     protected boolean isCA;
@@ -113,19 +113,19 @@ public class CertificateData extends AbstractEntity {
         this.emailAddress = emailAddress;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     public boolean isCA() {
         return isCA;
     }
 
     public void setCA(boolean CA) {
         isCA = CA;
+    }
+
+    public int getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(int serialNumber) {
+        this.serialNumber = serialNumber;
     }
 }

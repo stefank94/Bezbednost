@@ -45,7 +45,6 @@ public class DTOToBeanConverter {
         data.setCommonName(dto.getCommonName());
         data.setCountryCode(dto.getCountryCode());
         data.setEmailAddress(dto.getEmailAddress());
-        data.setUid(dto.getUid());
         return data;
     }
 

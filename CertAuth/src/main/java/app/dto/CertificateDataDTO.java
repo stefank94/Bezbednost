@@ -11,8 +11,8 @@ public class CertificateDataDTO extends AbstractEntityDTO {
     protected String organizationalUnit;
     protected String countryCode;
     protected String emailAddress;
-    protected String uid;
     protected boolean isCA;
+    protected int serialNumber;
 
     public CertificateDataDTO() { }
 
@@ -88,19 +88,19 @@ public class CertificateDataDTO extends AbstractEntityDTO {
         this.emailAddress = emailAddress;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     public boolean isCA() {
         return isCA;
     }
 
     public void setCA(boolean CA) {
         isCA = CA;
+    }
+
+    public int getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(int serialNumber) {
+        this.serialNumber = serialNumber;
     }
 }

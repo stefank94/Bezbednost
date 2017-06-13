@@ -5,6 +5,8 @@ import app.beans.CertificateAuthority;
 import app.beans.CertificateSigningRequest;
 import app.beans.User;
 import app.exception.EntityNotFoundException;
+
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 public interface CertificateService {
@@ -14,5 +16,7 @@ public interface CertificateService {
     Certificate findOne(int id) throws EntityNotFoundException;
 
     List<Certificate> getMyCertificates(User logged);
+
+    String writeCerFile(X509Certificate cert, int randomNumber);
 
 }

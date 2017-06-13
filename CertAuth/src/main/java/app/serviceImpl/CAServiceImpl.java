@@ -6,7 +6,9 @@ import app.beans.CertificateData;
 import app.exception.EntityNotFoundException;
 import app.repository.CARepository;
 import app.service.CAService;
+import app.service.CertificateService;
 import app.util.*;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -18,6 +20,9 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -32,6 +37,11 @@ public class CAServiceImpl implements CAService {
 
     @Autowired
     private CARepository caRepository;
+
+    @Autowired
+    private CertificateService certificateService;
+
+    private static final String folder = "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "certificates" + File.separator;
 
     // -------------------------------
 
@@ -80,6 +90,7 @@ public class CAServiceImpl implements CAService {
                 issuerX500 = X500NameUtility.makeX500Name(subjectData);
             X500Name subjectX500 = X500NameUtility.makeX500Name(subjectData);
 
+            // Certificate identifier
             SecureRandom random = new SecureRandom();
             int randomNumber = random.nextInt(Integer.MAX_VALUE - 1);
 
@@ -118,20 +129,13 @@ public class CAServiceImpl implements CAService {
             certificate.setIssuer(issuer);
             certificate.setValidFrom(notBefore);
             certificate.setValidTo(notAfter);
+            certificate.getCertificateData().setSerialNumber(randomNumber);
 
-            // randomly create Key Store credentials, and save the certificate in Key Store
-            KeyStoreCredentials credentials = KeyStoreCredentials.generateKeyStoreCredentialsForCertificate(
-                    false,
-                    Integer.toString(randomNumber));
-            certificate.setKeyStoreFileName(credentials.getKeyStoreFileName());
-            certificate.setKeyStorePassword(credentials.getKeyStorePassword());
-            certificate.setKeyStoreAlias(credentials.getKeyStoreAlias());
-            KeyStoreWriter writer = new KeyStoreWriter();
-            writer.saveCertificateToKeyStore(certificate, x509Certificate);
+            // Save the certificate in a .cer file
+            String fileName = certificateService.writeCerFile(x509Certificate, randomNumber);
+            certificate.setCerFileName(fileName);
 
-            KeyStoreCredentials privateKeyCredentials = KeyStoreCredentials.generateKeyStoreCredentialsForCertificate(
-                    true,
-                    Integer.toString(randomNumber));
+            KeyStoreCredentials privateKeyCredentials = KeyStoreCredentials.generateKeyStoreCredentials(Integer.toString(randomNumber));
             CertificateAuthority newCA = new CertificateAuthority();
             newCA.setCertificate(certificate);
             newCA.setKeyStoreAlias(privateKeyCredentials.getKeyStoreAlias());
