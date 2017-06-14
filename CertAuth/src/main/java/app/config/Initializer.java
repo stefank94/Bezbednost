@@ -40,7 +40,6 @@ public class Initializer implements InitializingBean {
 
             CertificateData data = new CertificateData();
             data.setCommonName("My Root CA");
-            data.setUid("myrootca");
             data.setCA(true);
             data.setCountryCode("RS");
             data.setEmailAddress("root@root.com");

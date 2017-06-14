@@ -3,7 +3,6 @@ package app.serviceImpl;
 import app.beans.*;
 import app.beans.Certificate;
 import app.exception.EntityNotFoundException;
-import app.repository.CARepository;
 import app.repository.CSRRepository;
 import app.repository.CertificateDataRepository;
 import app.repository.CertificateRepository;
@@ -66,8 +65,8 @@ public class CertificateServiceImpl implements CertificateService {
             calendar.add(Calendar.YEAR, 2); // Trajanje sertifikata 2 godine
             Date notAfter = calendar.getTime();
 
-            X500Name issuerX500 = X500NameUtility.makeX500Name(cA.getCertificate().getCertificateData());
-            X500Name subjectX500 = X500NameUtility.makeX500Name(request.getCertificateData());
+            X500Name issuerX500 = X509Helper.makeX500Name(cA.getCertificate().getCertificateData());
+            X500Name subjectX500 = X509Helper.makeX500Name(request.getCertificateData());
 
             PublicKey subjectPublicKey = getPublicKey(request.getCertificateData().getPublicKey(),
                     request.getCertificateData().getKeyAlgorithm());
@@ -81,6 +80,8 @@ public class CertificateServiceImpl implements CertificateService {
                     notAfter,
                     subjectX500,
                     subjectPublicKey);
+
+            X509Helper.makeExtensions(certGen, request.getCertificateData(), subjectPublicKey);
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();

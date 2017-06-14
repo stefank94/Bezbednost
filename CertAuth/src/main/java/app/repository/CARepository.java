@@ -11,6 +11,8 @@ public interface CARepository extends JpaRepository<CertificateAuthority, Intege
 
     List<CertificateAuthority> findByIssuerNotNull();
 
-    List<CertificateAuthority> findByBottomCA(boolean bottomCA);
+    List<CertificateAuthority> findByCaRole(CertificateAuthority.CARole role);
+
+    List<CertificateAuthority> findByCaRoleIn(List<CertificateAuthority.CARole> roles);
 
 }

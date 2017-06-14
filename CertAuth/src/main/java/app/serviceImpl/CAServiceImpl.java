@@ -8,7 +8,6 @@ import app.repository.CARepository;
 import app.service.CAService;
 import app.service.CertificateService;
 import app.util.*;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -21,12 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +49,7 @@ public class CAServiceImpl implements CAService {
     }
 
     @Override
-    public CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateData subjectData, boolean bottomCA) {
+    public CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateData subjectData, CertificateAuthority.CARole role) {
         try {
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
             builder = builder.setProvider("BC");
@@ -84,11 +82,11 @@ public class CAServiceImpl implements CAService {
             X500Name issuerX500 = null;
             if (issuer != null)
                 // if the issuer is specified, we get his information
-                issuerX500 = X500NameUtility.makeX500Name(issuer.getCertificate().getCertificateData());
+                issuerX500 = X509Helper.makeX500Name(issuer.getCertificate().getCertificateData());
             else
                 // otherwise we are creating a root CA, so the issuer data is the same as subject data
-                issuerX500 = X500NameUtility.makeX500Name(subjectData);
-            X500Name subjectX500 = X500NameUtility.makeX500Name(subjectData);
+                issuerX500 = X509Helper.makeX500Name(subjectData);
+            X500Name subjectX500 = X509Helper.makeX500Name(subjectData);
 
             // Certificate identifier
             SecureRandom random = new SecureRandom();
@@ -106,6 +104,7 @@ public class CAServiceImpl implements CAService {
                 subjectKeyPair = issuerKeyPair;
             subjectData.setPublicKey(Base64Utility.encode(subjectKeyPair.getPublic().getEncoded()));
             subjectData.setCA(true);
+            subjectData.setCertUsage(CertificateData.CertUsage.CA);
             if (subjectData.getKeyAlgorithm() == null || subjectData.getKeyAlgorithm().equals(""))
                 subjectData.setKeyAlgorithm("RSA");
 
@@ -116,6 +115,8 @@ public class CAServiceImpl implements CAService {
                     notAfter,
                     subjectX500,
                     subjectKeyPair.getPublic());
+
+            X509Helper.makeExtensions(certGen, subjectData, subjectKeyPair.getPublic());
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
@@ -142,7 +143,7 @@ public class CAServiceImpl implements CAService {
             newCA.setKeyStoreFileName(privateKeyCredentials.getKeyStoreFileName());
             newCA.setKeyStorePassword(privateKeyCredentials.getKeyStorePassword());
             newCA.setPrivateKeyPassword(privateKeyCredentials.getPrivateKeyPassword());
-            newCA.setBottomCA(bottomCA);
+            newCA.setCaRole(role);
 
             certificate.setCa(newCA);
 
@@ -150,11 +151,6 @@ public class CAServiceImpl implements CAService {
                 // set issuer
                 certificate.setIssuer(issuer);
                 newCA.setIssuer(issuer);
-                // Isser CA is no longer a bottom CA, so update it
-                if (issuer.isBottomCA()) {
-                    issuer.setBottomCA(false);
-                    caRepository.save(issuer);
-                }
             }
             else
                 // the issuer is self
@@ -184,7 +180,7 @@ public class CAServiceImpl implements CAService {
 
     @Override
     public CertificateAuthority generateRootCA(CertificateData data) {
-        return generateCertificateAuthority(null, data, false);
+        return generateCertificateAuthority(null, data, CertificateAuthority.CARole.ROOT);
     }
 
     @Override
@@ -197,12 +193,30 @@ public class CAServiceImpl implements CAService {
 
     @Override
     public List<CertificateAuthority> getIntermediateCAs() {
-        return caRepository.findByIssuerNotNull();
+        List<CertificateAuthority.CARole> roles = new ArrayList<>();
+        roles.add(CertificateAuthority.CARole.ROOT);
+        roles.add(CertificateAuthority.CARole.INTERMEDIATE);
+        return caRepository.findByCaRoleIn(roles);
     }
 
     @Override
-    public CertificateAuthority getRandomBottomCA() {
-        List<CertificateAuthority> cas = caRepository.findByBottomCA(true);
+    public CertificateAuthority getRandomCAForUsage(CertificateData.CertUsage usage) {
+        switch (usage) {
+            case CA:
+                return getRandomCAWithRole(CertificateAuthority.CARole.CA_ISSUER);
+            case HTTPS:
+                return getRandomCAWithRole(CertificateAuthority.CARole.HTTPS_ISSUER);
+            case MAIL:
+                return getRandomCAWithRole(CertificateAuthority.CARole.MAIL_ISSUER);
+            case DOC_SIGN:
+                return getRandomCAWithRole(CertificateAuthority.CARole.DOC_SIGN_ISSUER);
+            default:
+                return null;
+        }
+    }
+
+    private CertificateAuthority getRandomCAWithRole(CertificateAuthority.CARole role){
+        List<CertificateAuthority> cas = caRepository.findByCaRole(role);
         int idx = ThreadLocalRandom.current().nextInt(0, cas.size());
         return cas.get(idx);
     }

@@ -26,8 +26,12 @@ public class CertificateAuthority extends AbstractEntity {
     @Column(name = "privatekeypassword")
     protected String privateKeyPassword;
 
-    @Column(name = "bottomca")
-    protected boolean bottomCA;
+    public enum CARole {
+        ROOT, INTERMEDIATE, CA_ISSUER, HTTPS_ISSUER, MAIL_ISSUER, DOC_SIGN_ISSUER
+    }
+
+    @Column(name = "carole", nullable = false)
+    protected CARole caRole;
 
 
     public CertificateAuthority() { }
@@ -80,11 +84,11 @@ public class CertificateAuthority extends AbstractEntity {
         this.privateKeyPassword = privateKeyPassword;
     }
 
-    public boolean isBottomCA() {
-        return bottomCA;
+    public CARole getCaRole() {
+        return caRole;
     }
 
-    public void setBottomCA(boolean bottomCA) {
-        this.bottomCA = bottomCA;
+    public void setCaRole(CARole caRole) {
+        this.caRole = caRole;
     }
 }

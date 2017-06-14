@@ -1,12 +1,14 @@
 package app.dto;
 
+import app.beans.CertificateAuthority;
+
 public class CertificateAuthorityDTO extends AbstractEntityDTO {
 
     protected int issuer; // id
 
     protected CertificateDTO certificate;
 
-    protected boolean bottomCA;
+    protected CertificateAuthority.CARole caRole;
 
     public CertificateAuthorityDTO() { }
 
@@ -26,11 +28,11 @@ public class CertificateAuthorityDTO extends AbstractEntityDTO {
         this.certificate = certificate;
     }
 
-    public boolean isBottomCA() {
-        return bottomCA;
+    public CertificateAuthority.CARole getCaRole() {
+        return caRole;
     }
 
-    public void setBottomCA(boolean bottomCA) {
-        this.bottomCA = bottomCA;
+    public void setCaRole(CertificateAuthority.CARole caRole) {
+        this.caRole = caRole;
     }
 }

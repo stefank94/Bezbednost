@@ -39,6 +39,16 @@ public class CertificateData extends AbstractEntity {
     @Column(name = "isCA", nullable = false)
     protected boolean isCA;
 
+    @Column(name = "subjectkeyidentifier")
+    protected String subjectKeyIdentifier;
+
+    public enum CertUsage{
+        CA, HTTPS, MAIL, DOC_SIGN
+    }
+
+    @Column(name = "certusage", nullable = false)
+    protected CertUsage certUsage;
+
     public CertificateData() { }
 
     public String getPublicKey() {
@@ -127,5 +137,21 @@ public class CertificateData extends AbstractEntity {
 
     public void setSerialNumber(int serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public String getSubjectKeyIdentifier() {
+        return subjectKeyIdentifier;
+    }
+
+    public void setSubjectKeyIdentifier(String subjectKeyIdentifier) {
+        this.subjectKeyIdentifier = subjectKeyIdentifier;
+    }
+
+    public CertUsage getCertUsage() {
+        return certUsage;
+    }
+
+    public void setCertUsage(CertUsage certUsage) {
+        this.certUsage = certUsage;
     }
 }

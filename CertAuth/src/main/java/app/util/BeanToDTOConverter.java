@@ -60,6 +60,8 @@ public class BeanToDTOConverter {
         dto.setPublicKey(data.getPublicKey());
         dto.setSurname(data.getSurname());
         dto.setSerialNumber(data.getSerialNumber());
+        dto.setUsage(data.getCertUsage());
+        dto.setSubjectAlternativeName(data.getSubjectKeyIdentifier());
         return dto;
     }
 
@@ -84,7 +86,7 @@ public class BeanToDTOConverter {
         buildAbstractEntityDTO(dto, ca);
         dto.setIssuer(ca.getIssuer() == null ? -1 : ca.getIssuer().getId());
         dto.setCertificate(certificateToDTO(ca.getCertificate()));
-        dto.setBottomCA(ca.isBottomCA());
+        dto.setCaRole(ca.getCaRole());
         return dto;
     }
 

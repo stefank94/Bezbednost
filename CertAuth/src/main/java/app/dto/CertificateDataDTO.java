@@ -1,5 +1,7 @@
 package app.dto;
 
+import app.beans.CertificateData;
+
 public class CertificateDataDTO extends AbstractEntityDTO {
 
     protected String publicKey;
@@ -13,6 +15,8 @@ public class CertificateDataDTO extends AbstractEntityDTO {
     protected String emailAddress;
     protected boolean isCA;
     protected int serialNumber;
+    protected String subjectAlternativeName;
+    protected CertificateData.CertUsage usage;
 
     public CertificateDataDTO() { }
 
@@ -102,5 +106,21 @@ public class CertificateDataDTO extends AbstractEntityDTO {
 
     public void setSerialNumber(int serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public String getSubjectAlternativeName() {
+        return subjectAlternativeName;
+    }
+
+    public void setSubjectAlternativeName(String subjectAlternativeName) {
+        this.subjectAlternativeName = subjectAlternativeName;
+    }
+
+    public CertificateData.CertUsage getUsage() {
+        return usage;
+    }
+
+    public void setUsage(CertificateData.CertUsage usage) {
+        this.usage = usage;
     }
 }

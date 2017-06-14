@@ -1,9 +1,6 @@
 package app.service;
 
-import app.beans.Certificate;
-import app.beans.CertificateAuthority;
-import app.beans.CertificateSigningRequest;
-import app.beans.User;
+import app.beans.*;
 import app.exception.EntityNotFoundException;
 
 import java.security.cert.X509Certificate;

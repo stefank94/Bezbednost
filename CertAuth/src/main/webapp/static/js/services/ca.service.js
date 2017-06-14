@@ -41,7 +41,7 @@
                         'isCA': true
                     }
                 },
-                'bottomCA': false
+                'caRole': 'INTERMEDIATE'
             }
             return ca;
         }

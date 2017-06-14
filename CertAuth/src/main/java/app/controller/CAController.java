@@ -28,7 +28,7 @@ public class CAController {
     public ResponseEntity<CertificateAuthorityDTO> create(@RequestBody CertificateAuthorityDTO dto) throws EntityNotFoundException {
         CertificateAuthority issuer = caService.findById(dto.getIssuer());
         CertificateData data = DTOToBeanConverter.certificateDataDTOToBean(dto.getCertificate().getCertificateData());
-        CertificateAuthority ca = caService.generateCertificateAuthority(issuer, data, dto.isBottomCA());
+        CertificateAuthority ca = caService.generateCertificateAuthority(issuer, data, dto.getCaRole());
         return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityToDTO(ca), HttpStatus.OK);
     }
 

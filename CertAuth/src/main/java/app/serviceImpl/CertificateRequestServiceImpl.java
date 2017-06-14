@@ -51,7 +51,7 @@ public class CertificateRequestServiceImpl implements CertificateRequestService 
         CertificateSigningRequest req = certificateRequestRepository.findOne(id);
         if (req == null)
             throw new EntityNotFoundException("Certificate Request not found with ID: " + id);
-        CertificateAuthority ca = caService.getRandomBottomCA();
+        CertificateAuthority ca = caService.getRandomCAForUsage(req.getCertificateData().getCertUsage());
         Certificate cert = certificateService.generateCertificate(ca, req);
         req.setState(CertificateSigningRequest.CSRState.APPROVED);
         certificateRequestRepository.save(req);

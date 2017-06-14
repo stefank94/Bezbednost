@@ -10,7 +10,7 @@ public interface CAService {
 
     CertificateAuthority getRootCA();
 
-    CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateData data, boolean bottomCA);
+    CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateData data, CertificateAuthority.CARole role);
 
     CertificateAuthority generateRootCA(CertificateData data);
 
@@ -18,6 +18,6 @@ public interface CAService {
 
     List<CertificateAuthority> getIntermediateCAs();
 
-    CertificateAuthority getRandomBottomCA();
+    CertificateAuthority getRandomCAForUsage(CertificateData.CertUsage usage);
 
 }

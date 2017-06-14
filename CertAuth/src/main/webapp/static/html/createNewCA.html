@@ -46,10 +46,16 @@
         </div>
         <div class="row">
             <div class="col-md-4">
-                <label>Bottom CA: </label>
+                <label>CA Role: </label>
             </div>
             <div class="col-md-6">
-                <input type="checkbox" value="" ng-model="caCtrl.CA.bottomCA">
+                <select class="form-control" ng-model="caCtrl.CA.caRole">
+                    <option selected value="INTERMEDIATE">Intermediate CA</option>
+                    <option value="CA_ISSUER">CA issuer</option>
+                    <option value="HTTPS_ISSUER">HTTPS certificate issuer</option>
+                    <option value="MAIL_ISSUER">Mail certificate issuer</option>
+                    <option value="DOC_SIGN_ISSUER">Document signing certificate issuer</option>
+                </select>
             </div>
         </div>
         <hr><br>
