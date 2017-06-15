@@ -1,17 +1,23 @@
 package app.serviceImpl;
 
-import app.beans.Certificate;
-import app.beans.CertificateAuthority;
-import app.beans.CertificateSigningRequest;
-import app.beans.User;
+import app.beans.*;
+import app.exception.EntityAlreadyExistsException;
 import app.exception.EntityNotFoundException;
 import app.repository.CertificateRequestRepository;
 import app.service.CAService;
 import app.service.CertificateRequestService;
 import app.service.CertificateService;
+import app.util.X509Helper;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -65,6 +71,35 @@ public class CertificateRequestServiceImpl implements CertificateRequestService 
             throw new EntityNotFoundException("Certificate Request not found with ID: " + id);
         req.setState(CertificateSigningRequest.CSRState.REJECTED);
         return certificateRequestRepository.save(req);
+    }
+
+    @Override
+    public CertificateSigningRequest create(CertificateSigningRequest request) throws EntityAlreadyExistsException {
+        return certificateRequestRepository.save(request);
+    }
+
+    @Override
+    public CertificateSigningRequest acceptCSRFile(byte[] csrFile, CertificateData.CertUsage usage, User user) throws EntityAlreadyExistsException {
+        try {
+            Reader reader = new InputStreamReader(new ByteArrayInputStream(csrFile));
+            PemReader pemReader = new PemReader(reader);
+            PKCS10CertificationRequest csr = new PKCS10CertificationRequest(pemReader.readPemObject().getContent());
+            pemReader.close();
+            reader.close();
+
+            CertificateData data = X509Helper.readX500Name(csr.getSubject());
+            CertificateSigningRequest request = new CertificateSigningRequest();
+            request.setState(CertificateSigningRequest.CSRState.REQUESTED);
+            request.setDate(new Date());
+            request.setUser(user);
+            request.setCertificateData(data);
+
+            return create(request);
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

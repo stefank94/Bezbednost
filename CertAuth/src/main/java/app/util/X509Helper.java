@@ -1,12 +1,15 @@
 package app.util;
 
 import app.beans.CertificateData;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -37,6 +40,30 @@ public class X509Helper {
     private static void addRDN(X500NameBuilder builder, ASN1ObjectIdentifier id, String value){
         if (value != null && !value.equals(""))
             builder.addRDN(id, value);
+    }
+
+    public static CertificateData readX500Name(X500Name x500Name){
+        CertificateData data = new CertificateData();
+        data.setCommonName(getRDN(x500Name, BCStyle.CN));
+        data.setSurname(getRDN(x500Name, BCStyle.SURNAME));
+        data.setGivenName(getRDN(x500Name, BCStyle.GIVENNAME));
+        data.setOrganization(getRDN(x500Name, BCStyle.O));
+        data.setOrganizationalUnit(getRDN(x500Name, BCStyle.OU));
+        data.setCountryCode(getRDN(x500Name, BCStyle.C));
+        data.setEmailAddress(getRDN(x500Name, BCStyle.E));
+
+        return data;
+    }
+
+    private static String getRDN(X500Name x500Name, ASN1ObjectIdentifier id){
+        RDN[] rdn = x500Name.getRDNs(id);//[0].getFirst().getValue();
+        if (rdn != null && rdn.length > 0){
+            ASN1Encodable asn = rdn[0].getFirst().getValue();
+            String value = IETFUtils.valueToString(asn);
+            if (!"".equals(value))
+                return value;
+        }
+        return null;
     }
 
     public static void makeExtensions(X509v3CertificateBuilder builder, CertificateData data, PublicKey publicKey){
