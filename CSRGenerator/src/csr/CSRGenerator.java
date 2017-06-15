@@ -2,7 +2,6 @@ package csr;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.security.KeyPair;
@@ -10,11 +9,10 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 
-import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -22,7 +20,6 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
-import org.bouncycastle.util.io.pem.PemReader;
 
 public class CSRGenerator {
 	
@@ -30,24 +27,28 @@ public class CSRGenerator {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 	}
 	
+	private KeyPair keyPair;
+	private X500Name x500Name;
+	
 	public CSRGenerator() { }
 	
-	public void generateCSR(){
+	public void generateCSR(SubjectData data, String fileName){
 		try {
 			KeyPair keyPair = generateKeyPair("RSA", 2048);
+			this.keyPair = keyPair;
 			X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
-			builder.addRDN(BCStyle.CN, "Olaf Bergsson");
-			builder.addRDN(BCStyle.SURNAME, "Bergsson");
-			builder.addRDN(BCStyle.GIVENNAME, "Olaf");
-			builder.addRDN(BCStyle.O, "University of Bergen");
-			builder.addRDN(BCStyle.OU, "Department of pharmacognosy");
-			builder.addRDN(BCStyle.C, "Norway");
-			builder.addRDN(BCStyle.E, "olaf.bergsson@uib.ac.no");
+			addRDN(builder, BCStyle.CN, data.getCommonName());
+			addRDN(builder, BCStyle.SURNAME, data.getSurname());
+			addRDN(builder, BCStyle.GIVENNAME, data.getGivenName());
+			addRDN(builder, BCStyle.O, data.getOrganization());
+			addRDN(builder, BCStyle.OU, data.getOrganizationalUnit());
+			addRDN(builder, BCStyle.C, data.getCountryCode());
+			addRDN(builder, BCStyle.E, data.getEmail());
 			X500Name x500Name = builder.build();
+			this.x500Name = x500Name;
 			ContentSigner signGen = new JcaContentSignerBuilder("SHA1withRSA").build(keyPair.getPrivate());
 			PKCS10CertificationRequestBuilder csrBuilder = new JcaPKCS10CertificationRequestBuilder(x500Name, keyPair.getPublic());
 			PKCS10CertificationRequest csr = csrBuilder.build(signGen);
-			String fileName = "./data/request.csr";
 			File file = new File(fileName);
 			file.createNewFile();
 			FileOutputStream os = new FileOutputStream(file, false);
@@ -62,6 +63,11 @@ public class CSRGenerator {
 			e.printStackTrace();
 		}
 	}
+	
+	private void addRDN(X500NameBuilder builder, ASN1ObjectIdentifier id, String value){
+		if (value != null && !value.equals(""))
+			builder.addRDN(id, value);
+	}
  
     private KeyPair generateKeyPair(String alg, int keySize) {
     	KeyPairGenerator gen;
@@ -75,14 +81,25 @@ public class CSRGenerator {
 		}
     	return null;
     }
+
+	public KeyPair getKeyPair() {
+		return keyPair;
+	}
+
+	public void setKeyPair(KeyPair keyPair) {
+		this.keyPair = keyPair;
+	}
+
+	public X500Name getX500Name() {
+		return x500Name;
+	}
+
+	public void setX500Name(X500Name x500Name) {
+		this.x500Name = x500Name;
+	}
+	
     
-    public static void main(String[] args){
-    	CSRGenerator generator = new CSRGenerator();
-    	generator.generateCSR();
-    	System.out.println("CSR created.");
-    	generator.readCSR();
-    }
-    
+    /*
     public void readCSR(){
     	try {
 	    	FileReader fileReader = new FileReader("./data/request.csr");
@@ -96,5 +113,6 @@ public class CSRGenerator {
     		e.printStackTrace();
     	}
     }
+    */
     
 }

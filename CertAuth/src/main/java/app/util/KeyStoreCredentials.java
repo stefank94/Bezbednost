@@ -16,7 +16,7 @@ public class KeyStoreCredentials {
     public static KeyStoreCredentials generateKeyStoreCredentials(String identifier){
         KeyStoreCredentials credentials = new KeyStoreCredentials();
         SecureRandom random = new SecureRandom();
-        credentials.setKeyStoreFileName(identifier + "_PK");
+        credentials.setKeyStoreFileName(identifier + "_PK.jks");
         credentials.setPrivateKeyPassword(new BigInteger(130, random).toString(32));
         credentials.setKeyStoreAlias(new BigInteger(130, random).toString(32));
         credentials.setKeyStorePassword(new BigInteger(130, random).toString(32));
