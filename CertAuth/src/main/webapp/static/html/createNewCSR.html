@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>Request a Certificate to be issued. Upload a CSR file:</h3>
+        </div>
+        <br><hr><br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Choose CSR file:</label>
+            </div>
+            <div class="col-md-6">
+                <input accept=".csr" type="file" id="file" class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Choose the purpose of your certificate:</label>
+            </div>
+            <div class="col-md-6">
+                <select ng-model="csrCtrl.usage" class="form-control">
+                    <option selected value="HTTPS">HTTPS certificate</option>
+                    <option value="MAIL">Email certificate</option>
+                    <option value="DOC_SIGN">Document signing certificate</option>
+                    <option value="CA">Certificate Authority</option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <button type="button" ng-click="csrCtrl.upload()" class="btn btn-success">Upload <span class="glyphicon glyphicon-upload"></span></button>
+        </div>
+    </div>
+</div>

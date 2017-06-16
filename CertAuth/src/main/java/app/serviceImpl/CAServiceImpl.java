@@ -3,6 +3,7 @@ package app.serviceImpl;
 import app.beans.Certificate;
 import app.beans.CertificateAuthority;
 import app.beans.CertificateData;
+import app.exception.ActionNotPossibleException;
 import app.exception.EntityNotFoundException;
 import app.repository.CARepository;
 import app.service.CAService;
@@ -193,14 +194,11 @@ public class CAServiceImpl implements CAService {
 
     @Override
     public List<CertificateAuthority> getIntermediateCAs() {
-        List<CertificateAuthority.CARole> roles = new ArrayList<>();
-        roles.add(CertificateAuthority.CARole.ROOT);
-        roles.add(CertificateAuthority.CARole.INTERMEDIATE);
-        return caRepository.findByCaRoleIn(roles);
+        return caRepository.findByCaRole(CertificateAuthority.CARole.INTERMEDIATE);
     }
 
     @Override
-    public CertificateAuthority getRandomCAForUsage(CertificateData.CertUsage usage) {
+    public CertificateAuthority getRandomCAForUsage(CertificateData.CertUsage usage) throws ActionNotPossibleException {
         switch (usage) {
             case CA:
                 return getRandomCAWithRole(CertificateAuthority.CARole.CA_ISSUER);
@@ -215,8 +213,10 @@ public class CAServiceImpl implements CAService {
         }
     }
 
-    private CertificateAuthority getRandomCAWithRole(CertificateAuthority.CARole role){
+    private CertificateAuthority getRandomCAWithRole(CertificateAuthority.CARole role) throws ActionNotPossibleException {
         List<CertificateAuthority> cas = caRepository.findByCaRole(role);
+        if (cas.isEmpty())
+            throw new ActionNotPossibleException("There is no CA assigned to issue this type of certificate.");
         int idx = ThreadLocalRandom.current().nextInt(0, cas.size());
         return cas.get(idx);
     }

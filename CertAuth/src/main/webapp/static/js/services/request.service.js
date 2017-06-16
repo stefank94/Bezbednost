@@ -10,30 +10,48 @@
            getRequestByID: getRequestByID,
            getAllSubmittedRequests: getAllSubmittedRequests,
            approveRequest: approveRequest,
-           rejectRequest: rejectRequest
+           rejectRequest: rejectRequest,
+           upload: upload
 
        } ;
 
        //
 
+        function upload(file, usage){
+            var fd = new FormData();
+            fd.append("file", file);
+            return $http.post(baseUrl + "api/request/upload", fd, {
+                withCredentials: false,
+                headers: {
+                    'Content-Type': undefined,
+                    'Accept': 'application/json'
+                },
+                params: {
+                    'usage': usage,
+                    'csr': fd
+                },
+                transformRequest: angular.identity
+            });
+        }
+
         function getMyRequests(){
-            $http.get(baseUrl + 'api/request/getMyRequests');
+            return $http.get(baseUrl + 'api/request/getMyRequests');
         }
 
         function getRequestByID(id){
-            $http.get(baseUrl + 'api/request/' + id);
+            return $http.get(baseUrl + 'api/request/' + id);
         }
 
         function getAllSubmittedRequests(){
-            $http.get(baseUrl + 'api/request/getAllSubmittedRequests');
+            return $http.get(baseUrl + 'api/request/getAllSubmittedRequests');
         }
 
         function approveRequest(id){
-            $http.put(baseUrl + 'api/request/approve/' + id);
+            return $http.put(baseUrl + 'api/request/approve/' + id);
         }
 
         function rejectRequest(id){
-            $http.put(baseUrl + 'api/request/reject/' + id);
+            return $http.put(baseUrl + 'api/request/reject/' + id);
         }
 
     });

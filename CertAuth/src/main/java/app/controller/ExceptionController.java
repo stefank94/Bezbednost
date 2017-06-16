@@ -1,14 +1,10 @@
 package app.controller;
 
+import app.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import app.exception.ActionNotPossibleException;
-import app.exception.EntityAlreadyExistsException;
-import app.exception.EntityNotFoundException;
-import app.exception.NotPermittedException;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -30,6 +26,11 @@ public class ExceptionController {
 	
 	@ExceptionHandler(ActionNotPossibleException.class)
 	public ResponseEntity<Exception> handleActionNotPossibleException(ActionNotPossibleException e){
+		return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(WrongFileTypeException.class)
+	public ResponseEntity<Exception> handleWrongFileTypeException(WrongFileTypeException e){
 		return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
 	}
 

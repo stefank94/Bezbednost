@@ -14,6 +14,8 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.crypto.params.RSAKeyParameters;
+import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -104,7 +106,6 @@ public class CertificateServiceImpl implements CertificateService {
             String fileName = writeCerFile(x509Certificate, randomNumber);
             certificate.setCerFileName(fileName);
 
-            certificateDataRepository.save(certificate.getCertificateData());
             Certificate saved = certificateRepository.save(certificate);
 
             return saved;

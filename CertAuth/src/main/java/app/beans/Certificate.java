@@ -10,7 +10,7 @@ public class Certificate extends AbstractEntity {
     @JoinColumn(name = "issuer", referencedColumnName = "id")
     protected CertificateAuthority issuer;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "certificatedata", nullable = false)
     protected CertificateData certificateData;
 

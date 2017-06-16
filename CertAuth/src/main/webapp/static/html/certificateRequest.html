@@ -1,4 +1,4 @@
-<div class="container" ng-init="req.getCertificateRequest()">
+<div class="container" ng-init="reqCtrl.getCertificateRequest()">
     <div class="col-md-offset-2 col-md-8">
         <div class="row">
             <h3>Certificate Signing Request</h3>&nbsp;
@@ -85,7 +85,10 @@
             </div>
         </div>
         <br><hr><br>
-        <div class="row" ng-if="reqCtrl.isAdmin() && reqCtrl.request.status === 'REQUESTED'">
+        <div class="row" ng-if="reqCtrl.request.certificate != -1">
+            <a href="/#/cert/{{reqCtrl.request.certificate}}"><button type="button" class="btn btn-default">See certificate</button></a>
+        </div>
+        <div class="row" ng-if="reqCtrl.isAdmin() && reqCtrl.request.state === 'REQUESTED'">
             <button type="button" class="btn btn-success" ng-click="reqCtrl.approveRequest()">Approve request</button>&nbsp;
             <button type="button" class="btn btn-danger" ng-click="reqCtrl.rejectRequest()">Reject request</button>
         </div>

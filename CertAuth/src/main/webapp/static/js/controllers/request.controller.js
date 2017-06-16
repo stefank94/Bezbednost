@@ -3,9 +3,9 @@
     'use strict';
 
     angular.module('certApp').controller('RequestController', RequestController);
-    RequestController.$inject = ['userService', '$window', 'toastr', '$scope', 'requestService'];
+    RequestController.$inject = ['userService', '$window', 'toastr', '$routeParams', 'requestService'];
 
-    function RequestController(userService, $window, toastr, $scope, $routeParams, requestService){
+    function RequestController(userService, $window, toastr, $routeParams, requestService){
 
         var vm = this;
 
@@ -26,6 +26,7 @@
                 requestService.getRequestByID(id)
                     .then(function(data){
                         vm.request = data.data;
+                        console.log(data.data);
                     })
                     .catch(function(error){
                         toastr.error(error.data.message);

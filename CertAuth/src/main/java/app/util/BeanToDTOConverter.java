@@ -75,7 +75,7 @@ public class BeanToDTOConverter {
         dto.setUser(cert.getUser() == null ? null : cert.getUser().getEmail());
         dto.setValidFrom(cert.getValidFrom());
         dto.setValidTo(cert.getValidTo());
-        dto.setCa(cert.getCa().getId());
+        dto.setCa(cert.getCa() == null ? -1 : cert.getCa().getId());
         return dto;
     }
 
@@ -99,6 +99,7 @@ public class BeanToDTOConverter {
         dto.setState(request.getState());
         dto.setCertificateData(certificateDataToDTO(request.getCertificateData()));
         dto.setDate(request.getDate());
+        dto.setCertificate(request.getCertificate() == null ? -1 : request.getCertificate().getId());
         return dto;
     }
 

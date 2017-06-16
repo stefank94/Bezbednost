@@ -13,6 +13,9 @@ public class CertificateSigningRequestDTO extends AbstractEntityDTO {
 
     protected CertificateSigningRequest.CSRState state;
 
+    protected int certificate; // id
+
+
     public CertificateSigningRequestDTO() { }
 
     public CertificateDataDTO getCertificateData() {
@@ -45,5 +48,13 @@ public class CertificateSigningRequestDTO extends AbstractEntityDTO {
 
     public void setState(CertificateSigningRequest.CSRState state) {
         this.state = state;
+    }
+
+    public int getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(int certificate) {
+        this.certificate = certificate;
     }
 }

@@ -8,4 +8,8 @@ public class ActionNotPossibleException extends Exception {
 		super(message);
 	}
 
+	public ActionNotPossibleException(Exception e){
+		super(e);
+	}
+
 }

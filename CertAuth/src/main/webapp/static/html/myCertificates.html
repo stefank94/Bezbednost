@@ -11,27 +11,27 @@
                     <br>
                     <label>{{cert.certificateData.commonName}}</label>
                 </div>
-            </div>
-            <div class="col-md-6 col-md-offset-1">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Issuer: </label>
+                <div class="col-md-6 col-md-offset-1">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Issuer: </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label><a href="/#/ca/{{cert.issuer}}">See issuer</a></label>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label><a href="/#/ca/{{cert.issuer}}">See issuer</a></label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Valid to: </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label>{{cert.validTo}}</label>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Valid to: </label>
-                    </div>
-                    <div class="col-md-6">
-                        <label>{{cert.validTo}}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <a href="/#/cert/{{cert.id}}"><button type="button" class="btn btn-default">Details</button></a>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="/#/cert/{{cert.id}}"><button type="button" class="btn btn-default">Details</button></a>
+                        </div>
                     </div>
                 </div>
             </div>

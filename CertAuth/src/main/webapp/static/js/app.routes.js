@@ -57,9 +57,14 @@
                 controllerAs: 'reqCtrl'
             })
             .when('/request/:id', {
-                templateUrl: 'static/html/request.html',
+                templateUrl: 'static/html/certificateRequest.html',
                 controller: 'RequestController',
                 controllerAs: 'reqCtrl'
+            })
+            .when('/createCSR', {
+                templateUrl: 'static/html/createNewCSR.html',
+                controller: 'CreateCSRController',
+                controllerAs: 'csrCtrl'
             })
             .otherwise({
                 redirectTo: '/'

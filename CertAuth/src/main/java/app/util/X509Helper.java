@@ -118,7 +118,10 @@ public class X509Helper {
                 list.add(KeyPurposeId.anyExtendedKeyUsage);
                 break;
         }
-        return new ExtendedKeyUsage((KeyPurposeId[]) list.toArray());
+        KeyPurposeId[] purposes = new KeyPurposeId[list.size()];
+        for (int i = 0; i < purposes.length; i++)
+            purposes[i] = list.get(i);
+        return new ExtendedKeyUsage(purposes);
     }
 
     private static SubjectKeyIdentifier createSubjectKeyIdentifier(PublicKey key) throws IOException {

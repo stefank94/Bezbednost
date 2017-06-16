@@ -2,6 +2,7 @@ package app.service;
 
 import app.beans.CertificateAuthority;
 import app.beans.CertificateData;
+import app.exception.ActionNotPossibleException;
 import app.exception.EntityNotFoundException;
 
 import java.util.List;
@@ -18,6 +19,6 @@ public interface CAService {
 
     List<CertificateAuthority> getIntermediateCAs();
 
-    CertificateAuthority getRandomCAForUsage(CertificateData.CertUsage usage);
+    CertificateAuthority getRandomCAForUsage(CertificateData.CertUsage usage) throws ActionNotPossibleException;
 
 }

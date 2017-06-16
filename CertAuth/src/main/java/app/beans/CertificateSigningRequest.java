@@ -7,7 +7,7 @@ import java.util.Date;
 @Entity
 public class CertificateSigningRequest extends AbstractEntity {
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "certificatedata", nullable = false)
     protected CertificateData certificateData;
 
@@ -24,6 +24,10 @@ public class CertificateSigningRequest extends AbstractEntity {
 
     @Column(name = "state", nullable = false)
     protected CSRState state;
+
+    @OneToOne
+    @JoinColumn(name = "certificate", referencedColumnName = "id")
+    protected Certificate certificate;
 
     public CertificateSigningRequest() { }
 
@@ -57,5 +61,13 @@ public class CertificateSigningRequest extends AbstractEntity {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Certificate getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(Certificate certificate) {
+        this.certificate = certificate;
     }
 }
