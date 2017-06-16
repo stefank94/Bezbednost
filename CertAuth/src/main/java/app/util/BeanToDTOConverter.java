@@ -3,6 +3,7 @@ package app.util;
 import app.beans.*;
 import app.dto.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +77,11 @@ public class BeanToDTOConverter {
         dto.setValidFrom(cert.getValidFrom());
         dto.setValidTo(cert.getValidTo());
         dto.setCa(cert.getCa() == null ? -1 : cert.getCa().getId());
+        File file = new File(cert.getCerFileName());
+        if (file.exists())
+            dto.setCerFileName(file.getName());
+        else
+            dto.setCerFileName("");
         return dto;
     }
 

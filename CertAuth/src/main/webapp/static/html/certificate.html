@@ -98,6 +98,11 @@
             </div>
         </div>
         <br><hr><br>
+        <div class="row" ng-if="certCtrl.certificate.cerFileName !== ''">
+            <a href="http://localhost:8080/certificates/{{certCtrl.certificate.cerFileName}}" target="_self" download="{{certCtrl.certificate.cerFileName}}">
+                <button type="button" class="btn btn-primary">Download certificate</button>
+            </a>
+        </div>
         <div class="row" ng-if="certCtrl.isAdmin() || (certCtrl.certificate.user === certCtrl.getLoggedInUser().username && certCtrl.certificate.user != null)">
             <button type="button" class="btn btn-danger">Revoke certificate <span class="glyphicon glyphicon-remove"></span></button>
         </div>

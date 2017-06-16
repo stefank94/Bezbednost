@@ -3,6 +3,7 @@ package app.service;
 import app.beans.*;
 import app.exception.EntityNotFoundException;
 
+import java.io.OutputStream;
 import java.security.cert.X509Certificate;
 import java.util.List;
 

@@ -16,6 +16,7 @@
         vm.isAdmin = userService.isAdmin;
         vm.getLoggedInUser = userService.getLoggedInUser;
         vm.getCertificate = getCertificate;
+        vm.downloadCertificate = downloadCertificate;
 
         //
 
@@ -34,6 +35,10 @@
                     });
             } else
                 $window.location.href = "/#/caList";
+        }
+
+        function downloadCertificate(){
+
         }
 
     }

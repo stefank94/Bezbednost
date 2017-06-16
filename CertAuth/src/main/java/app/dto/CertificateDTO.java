@@ -10,6 +10,7 @@ public class CertificateDTO extends AbstractEntityDTO {
     protected String user; // email
     protected Date validFrom;
     protected Date validTo;
+    protected String cerFileName;
 
     public CertificateDTO() { }
 
@@ -59,5 +60,13 @@ public class CertificateDTO extends AbstractEntityDTO {
 
     public void setCa(int ca) {
         this.ca = ca;
+    }
+
+    public String getCerFileName() {
+        return cerFileName;
+    }
+
+    public void setCerFileName(String cerFileName) {
+        this.cerFileName = cerFileName;
     }
 }

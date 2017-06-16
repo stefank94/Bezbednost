@@ -22,9 +22,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateEncodingException;
@@ -152,6 +150,7 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return null;
     }
+
 
     private PublicKey getPublicKey(String publicKeyString, String keyAlgorithm){
         try {

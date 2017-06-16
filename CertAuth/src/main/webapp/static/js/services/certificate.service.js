@@ -5,7 +5,8 @@
 
         return {
             getCertificateByID : getCertificateByID,
-            getMyCertificates: getMyCertificates
+            getMyCertificates: getMyCertificates,
+            downloadCertificate: downloadCertificate
         };
 
         //
@@ -16,6 +17,12 @@
 
         function getMyCertificates(){
             return $http.get(baseUrl + 'api/cert/getMyCertificates');
+        }
+
+        function downloadCertificate(id){
+            return $http.get(baseUrl + 'api/cert/download/' + id, {
+                responseType: 'arraybuffer'
+            });
         }
 
     });
