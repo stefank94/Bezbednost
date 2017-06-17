@@ -15,7 +15,7 @@ public class CertificateSigningRequest extends AbstractEntity {
     @JoinColumn(name = "user", referencedColumnName = "id")
     protected User user;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "revocationDate", nullable = false)
     protected Date date;
 
     public enum CSRState{

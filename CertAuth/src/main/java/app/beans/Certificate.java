@@ -30,6 +30,10 @@ public class Certificate extends AbstractEntity {
     @Column(name = "cerfilename")
     protected String cerFileName;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "revocation", referencedColumnName = "id")
+    protected Revocation revocation;
+
 
     public Certificate() { }
 
@@ -87,5 +91,13 @@ public class Certificate extends AbstractEntity {
 
     public void setCa(CertificateAuthority ca) {
         this.ca = ca;
+    }
+
+    public Revocation getRevocation() {
+        return revocation;
+    }
+
+    public void setRevocation(Revocation revocation) {
+        this.revocation = revocation;
     }
 }

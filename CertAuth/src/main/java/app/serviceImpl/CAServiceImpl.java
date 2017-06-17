@@ -1,5 +1,6 @@
 package app.serviceImpl;
 
+import app.beans.CRLInformation;
 import app.beans.Certificate;
 import app.beans.CertificateAuthority;
 import app.beans.CertificateData;
@@ -145,6 +146,9 @@ public class CAServiceImpl implements CAService {
             newCA.setKeyStorePassword(privateKeyCredentials.getKeyStorePassword());
             newCA.setPrivateKeyPassword(privateKeyCredentials.getPrivateKeyPassword());
             newCA.setCaRole(role);
+            CRLInformation crl = new CRLInformation();
+            crl.setCa(newCA);
+            newCA.setCrlInformation(crl);
 
             certificate.setCa(newCA);
 

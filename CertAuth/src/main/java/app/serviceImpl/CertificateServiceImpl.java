@@ -2,10 +2,15 @@ package app.serviceImpl;
 
 import app.beans.*;
 import app.beans.Certificate;
+import app.dto.RevocationDTO;
+import app.exception.ActionNotPossibleException;
 import app.exception.EntityNotFoundException;
+import app.exception.InvalidDataException;
+import app.exception.NotPermittedException;
 import app.repository.CSRRepository;
 import app.repository.CertificateDataRepository;
 import app.repository.CertificateRepository;
+import app.repository.RevocationRepository;
 import app.service.CertificateService;
 import app.util.*;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -44,7 +49,7 @@ public class CertificateServiceImpl implements CertificateService {
     private CSRRepository csrRepository;
 
     @Autowired
-    private CertificateDataRepository certificateDataRepository;
+    private RevocationRepository revocationRepository;
 
     private static final String folder = "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "certificates" + File.separator;
 
@@ -127,6 +132,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public Certificate save(Certificate certificate) {
+        return certificateRepository.save(certificate);
+    }
+
+    @Override
     public List<Certificate> getMyCertificates(User logged) {
         return certificateRepository.findByUser(logged);
     }
@@ -149,6 +159,76 @@ public class CertificateServiceImpl implements CertificateService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Certificate revokeCertificate(RevocationDTO revocationDTO, User logged) throws EntityNotFoundException, ActionNotPossibleException, NotPermittedException, InvalidDataException {
+        Certificate cert = certificateRepository.findOne(revocationDTO.getCertificate());
+        if (cert == null)
+            throw new EntityNotFoundException("Certificate not found with ID: " + revocationDTO.getCertificate());
+        if (logged.equals(cert.getUser()) || logged instanceof Admin){
+            if (cert.getRevocation() == null){
+                Revocation revocation = new Revocation();
+                Date now = new Date();
+                if (now.before(revocationDTO.getInvalidityDate()))
+                    throw new InvalidDataException("Invalidity date cannot be in the future.");
+                revocation.setInvalidityDate(revocationDTO.getInvalidityDate());
+                revocation.setCertificate(cert);
+                if (!revocationDTO.isFullyRevoked())
+                    revocation.setReason("certificateHold");
+                else if (!Revocation.getValidReasons().contains(revocationDTO.getReason()) || revocationDTO.equals("certificateHold"))
+                    throw new InvalidDataException("Invalid certificate revocation reason.");
+                else
+                    revocation.setReason(revocationDTO.getReason());
+                revocation.setFullyRevoked(revocation.isFullyRevoked());
+                revocation.setRevocationDate(now);
+                cert.setRevocation(revocation);
+
+                return save(cert);
+            } else
+                throw new ActionNotPossibleException("This certificate has already been revoked.");
+        } else
+            throw new NotPermittedException("You do not have permission to revoke this certificate.");
+    }
+
+    @Override
+    public Certificate restoreCertificateOnHold(int id, User logged) throws EntityNotFoundException, ActionNotPossibleException, NotPermittedException {
+        Certificate cert = certificateRepository.findOne(id);
+        if (cert == null)
+            throw new EntityNotFoundException("Certificate not found with ID: " + id);
+        if (logged.equals(cert.getUser()) || logged instanceof Admin){
+            if (cert.getRevocation() == null)
+                throw new ActionNotPossibleException("Cannot restore a certificate that has not been put on hold.");
+            if (cert.getRevocation().isFullyRevoked())
+                throw new ActionNotPossibleException("Cannot restore a fully revoked certificate.");
+            Revocation rev = cert.getRevocation();
+            cert.setRevocation(null);
+            Certificate savedCertificate = certificateRepository.save(cert);
+            revocationRepository.delete(rev);
+            return savedCertificate;
+        } else
+            throw new NotPermittedException("You do not have permission to revoke this certificate.");
+    }
+
+    @Override
+    public Certificate fullyRevokeCertificateOnHold(int id, User logged, String reason) throws EntityNotFoundException, ActionNotPossibleException, NotPermittedException {
+        Certificate cert = certificateRepository.findOne(id);
+        if (cert == null)
+            throw new EntityNotFoundException("Certificate not found with ID: " + id);
+        if (logged.equals(cert.getUser()) || logged instanceof Admin){
+            if (cert.getRevocation() == null)
+                throw new ActionNotPossibleException("Cannot fully revoke a certificate that has not been put on hold.");
+            if (cert.getRevocation().isFullyRevoked())
+                throw new ActionNotPossibleException("Certificate is already fully revoked.");
+            Revocation rev = cert.getRevocation();
+            rev.setFullyRevoked(true);
+            if (!Revocation.getValidReasons().contains(reason) || reason.equals("certificateHold"))
+                throw new ActionNotPossibleException("Invalid certificate revocation reason.");
+            rev.setReason(reason);
+            revocationRepository.save(rev);
+            return certificateRepository.findOne(id);
+        } else
+            throw new NotPermittedException("You do not have permission to revoke this certificate.");
     }
 
 

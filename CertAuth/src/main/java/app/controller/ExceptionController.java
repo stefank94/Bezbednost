@@ -34,4 +34,9 @@ public class ExceptionController {
 		return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(InvalidDataException.class)
+	public ResponseEntity<Exception> handleInvalidDataException(InvalidDataException e){
+		return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+	}
+
 }

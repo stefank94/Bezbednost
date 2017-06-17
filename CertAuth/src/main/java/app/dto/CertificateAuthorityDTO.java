@@ -5,10 +5,9 @@ import app.beans.CertificateAuthority;
 public class CertificateAuthorityDTO extends AbstractEntityDTO {
 
     protected int issuer; // id
-
     protected CertificateDTO certificate;
-
     protected CertificateAuthority.CARole caRole;
+    protected CRLInformationDTO crlInformation;
 
     public CertificateAuthorityDTO() { }
 
@@ -34,5 +33,13 @@ public class CertificateAuthorityDTO extends AbstractEntityDTO {
 
     public void setCaRole(CertificateAuthority.CARole caRole) {
         this.caRole = caRole;
+    }
+
+    public CRLInformationDTO getCrlInformation() {
+        return crlInformation;
+    }
+
+    public void setCrlInformation(CRLInformationDTO crlInformation) {
+        this.crlInformation = crlInformation;
     }
 }

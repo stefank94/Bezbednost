@@ -11,6 +11,7 @@ public class CertificateDTO extends AbstractEntityDTO {
     protected Date validFrom;
     protected Date validTo;
     protected String cerFileName;
+    protected RevocationDTO revocation;
 
     public CertificateDTO() { }
 
@@ -68,5 +69,13 @@ public class CertificateDTO extends AbstractEntityDTO {
 
     public void setCerFileName(String cerFileName) {
         this.cerFileName = cerFileName;
+    }
+
+    public RevocationDTO getRevocation() {
+        return revocation;
+    }
+
+    public void setRevocation(RevocationDTO revocation) {
+        this.revocation = revocation;
     }
 }

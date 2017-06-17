@@ -1,6 +1,6 @@
 package app.util;
 
-import app.beans.CertificateData;
+import app.beans.*;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -16,8 +16,14 @@ import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.bc.BcX509ExtensionUtils;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.PublicKey;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,6 +142,21 @@ public class X509Helper {
             e.printStackTrace();
         } finally {
             is.close();
+        }
+        return null;
+    }
+
+    public static X509Certificate readCertificateFromFile(app.beans.Certificate cert){
+        try {
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            File file = new File(cert.getCerFileName());
+            InputStream in = new ByteArrayInputStream(Files.readAllBytes(file.toPath()));
+            X509Certificate x509 = (X509Certificate) certFactory.generateCertificate(in);
+            return x509;
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

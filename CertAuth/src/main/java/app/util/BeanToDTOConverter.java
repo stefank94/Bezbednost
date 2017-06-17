@@ -82,6 +82,7 @@ public class BeanToDTOConverter {
             dto.setCerFileName(file.getName());
         else
             dto.setCerFileName("");
+        dto.setRevocation(revocationToDTO(cert.getRevocation()));
         return dto;
     }
 
@@ -93,6 +94,7 @@ public class BeanToDTOConverter {
         dto.setIssuer(ca.getIssuer() == null ? -1 : ca.getIssuer().getId());
         dto.setCertificate(certificateToDTO(ca.getCertificate()));
         dto.setCaRole(ca.getCaRole());
+        dto.setCrlInformation(crlInformationToDTO(ca.getCrlInformation()));
         return dto;
     }
 
@@ -134,6 +136,32 @@ public class BeanToDTOConverter {
         for (Certificate cert : list)
             dtoList.add(certificateToDTO(cert));
         return dtoList;
+    }
+
+    public static RevocationDTO revocationToDTO(Revocation rev){
+        if (rev == null)
+            return null;
+        RevocationDTO dto = new RevocationDTO();
+        buildAbstractEntityDTO(dto, rev);
+        dto.setCertificate(rev.getCertificate().getId());
+        dto.setFullyRevoked(rev.isFullyRevoked());
+        dto.setReason(rev.getReason());
+        dto.setRevocationDate(rev.getRevocationDate());
+        dto.setInvalidityDate(rev.getInvalidityDate());
+        return dto;
+    }
+
+    public static CRLInformationDTO crlInformationToDTO(CRLInformation crl){
+        if (crl == null)
+            return null;
+        CRLInformationDTO dto = new CRLInformationDTO();
+        buildAbstractEntityDTO(dto, crl);
+        dto.setCa(crl.getCa().getId());
+        dto.setCrlFilename(crl.getCrlFilename());
+        dto.setCurrentIssued(crl.getCurrentIssued());
+        dto.setNextIssued(crl.getNextIssued());
+        dto.setCrlNumber(crl.getCrlNumber());
+        return dto;
     }
 
 }

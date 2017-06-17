@@ -33,6 +33,12 @@ public class CertificateAuthority extends AbstractEntity {
     @Column(name = "carole", nullable = false)
     protected CARole caRole;
 
+    @OneToMany(mappedBy = "issuer")
+    protected List<Certificate> issuedCertificates;
+
+    @OneToOne(mappedBy = "ca", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    protected CRLInformation crlInformation;
+
 
     public CertificateAuthority() { }
 
@@ -90,5 +96,21 @@ public class CertificateAuthority extends AbstractEntity {
 
     public void setCaRole(CARole caRole) {
         this.caRole = caRole;
+    }
+
+    public List<Certificate> getIssuedCertificates() {
+        return issuedCertificates;
+    }
+
+    public void setIssuedCertificates(List<Certificate> issuedCertificates) {
+        this.issuedCertificates = issuedCertificates;
+    }
+
+    public CRLInformation getCrlInformation() {
+        return crlInformation;
+    }
+
+    public void setCrlInformation(CRLInformation crlInformation) {
+        this.crlInformation = crlInformation;
     }
 }
