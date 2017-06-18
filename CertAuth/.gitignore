@@ -23,6 +23,6 @@ dist/
 nbdist/
 .nb-gradle/
 
-src/main/webapp/certificates/**
-src/main/webapp/crl/**
-src/main/webapp/keystores/**
+src/main/webapp/certificates/*.cer
+src/main/webapp/crl/*.crl
+src/main/webapp/keystores/*.jks

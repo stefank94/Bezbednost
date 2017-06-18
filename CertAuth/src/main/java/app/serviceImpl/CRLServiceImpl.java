@@ -42,7 +42,7 @@ public class CRLServiceImpl implements CRLService{
     // -------------------------------------------------------
 
     @Override
-    public void issueCRL(CertificateAuthority ca) {
+    public Date issueCRL(CertificateAuthority ca, Date nextUpdate) { // Returns date of execution
         try {
             // Information about this CA's CRLs
             CRLInformation crlInformation = ca.getCrlInformation();
@@ -55,11 +55,6 @@ public class CRLServiceImpl implements CRLService{
             Date now = new Date();
             X509v2CRLBuilder crlBuilder = new X509v2CRLBuilder(issuerName, now);
 
-            // time of issuing and next scheduled issuing time
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(now);
-            calendar.add(Calendar.DAY_OF_MONTH, 1); // TO BE CHANGED
-            Date nextUpdate = calendar.getTime();
             crlBuilder.setNextUpdate(nextUpdate);
 
             // add all revoked certificates
@@ -113,6 +108,8 @@ public class CRLServiceImpl implements CRLService{
             crlInformation.setCrlFilename(filename);
             saveCRLInformation(crlInformation);
 
+            return now;
+
         } catch (CertificateEncodingException e) {
             e.printStackTrace();
         } catch (OperatorCreationException e) {
@@ -122,6 +119,7 @@ public class CRLServiceImpl implements CRLService{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override

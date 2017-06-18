@@ -19,6 +19,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -40,6 +41,12 @@ public class CAServiceImpl implements CAService {
 
     @Autowired
     private CertificateService certificateService;
+
+    @Value("${task.defaultFrequency}")
+    private String defaultCronExpression;
+
+    @Value("${task.defaultFrequencyName}")
+    private String defaultFrequencyDescription;
 
     private static final String folder = "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "certificates" + File.separator;
 

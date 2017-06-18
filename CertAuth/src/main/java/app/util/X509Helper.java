@@ -75,17 +75,25 @@ public class X509Helper {
 
     public static void makeExtensions(X509v3CertificateBuilder builder, CertificateData data, PublicKey publicKey, CertificateAuthority issuer, X500Name issuerName){
         try {
+            // subject key identifier
             SubjectKeyIdentifier ski = createSubjectKeyIdentifier(publicKey);
             data.setSubjectKeyIdentifier(ski.getEncoded().toString());
             builder.addExtension(Extension.subjectKeyIdentifier, false, createSubjectKeyIdentifier(publicKey));
+            // basic constraints ("is CA?")
             builder.addExtension(Extension.basicConstraints, false, new BasicConstraints(data.isCA()));
+            // key usage
             builder.addExtension(Extension.keyUsage, false, makeKeyUsage(data));
-            if (!data.isCA())
+            if (!data.isCA()) {
+                // extended key usage
                 builder.addExtension(Extension.extendedKeyUsage, false, makeExtendedKeyUsage(data));
+            }
             if (issuer != null) {
+                // authority key identifier
                 String id = issuer.getCertificate().getCertificateData().getSubjectKeyIdentifier();
-                AuthorityKeyIdentifier aki = new AuthorityKeyIdentifier(new GeneralNames(new GeneralName(issuerName)), new BigInteger(id));
+                GeneralName issuerGeneralName = new GeneralName(issuerName);
+                AuthorityKeyIdentifier aki = new AuthorityKeyIdentifier(new GeneralNames(issuerGeneralName), new BigInteger(id));
                 builder.addExtension(Extension.authorityKeyIdentifier, false, aki);
+                //TODO: authority information access
             }
         } catch (CertIOException e) {
             e.printStackTrace();

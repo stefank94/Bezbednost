@@ -19,16 +19,14 @@ public class CRLInformation extends AbstractEntity {
     @Column(name = "nextissued")
     protected Date nextIssued;
 
-    //protected String cronFrequency;       ????
-    //protected String nextCronFrequency;  // for when the frequency is changed to a longer time, and we still need to
-                                           // issue the next CRL by nextIssued. The new frequency takes effect after
-                                           // the next CRL is issued.
     @Column(name = "crlfilename")
     protected String crlFilename;
 
     @Column(name = "crlnumber")
     protected int crlNumber;
 
+    @Column(name = "cronexpression")
+    protected String cronExpression;
 
     public CRLInformation() { }
 
@@ -76,5 +74,13 @@ public class CRLInformation extends AbstractEntity {
 
     public void setCrlNumber(int crlNumber) {
         this.crlNumber = crlNumber;
+    }
+
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
     }
 }
