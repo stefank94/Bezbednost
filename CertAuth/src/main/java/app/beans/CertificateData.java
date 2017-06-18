@@ -33,7 +33,7 @@ public class CertificateData extends AbstractEntity {
     @Column(name = "emailaddress")
     protected String emailAddress;
 
-    @Column(name = "serialNumber")
+    @Column(name = "serialNumber", unique = true)
     protected int serialNumber;
 
     @Column(name = "isCA", nullable = false)

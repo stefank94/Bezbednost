@@ -1,7 +1,12 @@
 <div class="container" ng-init="certCtrl.getCertificate()">
     <div class="col-md-offset-2 col-md-8">
         <div class="row">
-            <h3>Certificate</h3>
+            <h3>Certificate &nbsp;
+                <span class="label label-primary" ng-if="certCtrl.certificate.status ==='VALID'">valid</span>
+                <span class="label label-default" ng-if="certCtrl.certificate.status ==='EXPIRED'">expired</span>
+                <span class="label label-danger" ng-if="certCtrl.certificate.status ==='REVOKED'">revoked</span>
+                <span class="label label-warning" ng-if="certCtrl.certificate.status ==='ON_HOLD'">on hold</span>
+            </h3>
         </div>
         <br><hr><br>
         <div class="row" ng-if="certCtrl.certificate.certificateData.ca">
@@ -106,7 +111,7 @@
         <div class="row" ng-if="certCtrl.isAdmin() || (certCtrl.certificate.user === certCtrl.getLoggedInUser().email && certCtrl.certificate.user != null)">
             <a href="/#/revoke/{{certCtrl.certificate.id}}" ng-if="certCtrl.certificate.revocation == null"><button type="button" class="btn btn-danger" >Revoke certificate <span class="glyphicon glyphicon-remove"></span></button></a>
             <button type="button" class="btn btn-warning" ng-if="certCtrl.certificate.revocation && !certCtrl.certificate.revocation.fullyRevoked" ng-click="certCtrl.restore()">Restore certificate</button>
-            <button type="button" class="btn btn-danger" ng-if="certCtrl.certificate.revocation && !certCtrl.certificate.revocation.fullyRevoked" ng-click="certCtrl.fullyRevoke()">Fully revoke certificate</button>
+            <a href="/#/revoke/{{certCtrl.certificate.id}}"><button type="button" class="btn btn-danger" ng-if="certCtrl.certificate.revocation && !certCtrl.certificate.revocation.fullyRevoked">Fully revoke certificate</button></a>
         </div>
     </div>
 </div>

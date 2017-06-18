@@ -5,6 +5,7 @@ import app.dto.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class BeanToDTOConverter {
@@ -83,6 +84,15 @@ public class BeanToDTOConverter {
         else
             dto.setCerFileName("");
         dto.setRevocation(revocationToDTO(cert.getRevocation()));
+        Date now = new Date();
+        if (cert.getRevocation() == null && cert.getValidTo().after(now))
+            dto.setStatus(CertificateDTO.CertStatus.VALID);
+        else if (cert.getRevocation() == null && cert.getValidTo().before(now))
+            dto.setStatus(CertificateDTO.CertStatus.EXPIRED);
+        else if (cert.getRevocation().isFullyRevoked())
+            dto.setStatus(CertificateDTO.CertStatus.REVOKED);
+        else
+            dto.setStatus(CertificateDTO.CertStatus.ON_HOLD);
         return dto;
     }
 
@@ -161,6 +171,14 @@ public class BeanToDTOConverter {
         dto.setCurrentIssued(crl.getCurrentIssued());
         dto.setNextIssued(crl.getNextIssued());
         dto.setCrlNumber(crl.getCrlNumber());
+        if (crl.getCrlFilename() != null) {
+            File file = new File(crl.getCrlFilename());
+            if (file.exists())
+                dto.setCrlFilename(file.getName());
+            else
+                dto.setCrlFilename("");
+        } else
+            dto.setCrlFilename("");
         return dto;
     }
 

@@ -1,7 +1,7 @@
 <div class="container" ng-init="revCtrl.initRevoke()">
     <div class="col-md-offset-2 col-md-8">
         <div class="row">
-            <h3>Revoke certificate</h3>
+            <h3><span ng-if="revCtrl.certificate.revocation.fullyRevoked === false">Fully </span>Revoke certificate</h3>
         </div>
         <br><hr><br>
         <div class="row">
@@ -13,7 +13,7 @@
             </div>
         </div>
         <br>
-        <div class="row">
+        <div class="row" ng-hide="revCtrl.certificate.revocation.fullyRevoked === false">
             <div class="col-md-6">
                 <label>Type of revocation:</label>
             </div>
@@ -48,7 +48,7 @@
             </div>
         </div>
         <br>
-        <div class="row">
+        <div class="row" ng-hide="revCtrl.certificate.revocation.fullyRevoked === false">
             <div class="col-md-6">
                 <label>When do you believe the certificate became invalid? </label>
             </div>
@@ -58,15 +58,18 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-hide="revCtrl.certificate.revocation.fullyRevoked === false">
             <div class="col-md-6 col-md-offset-6"  ng-show="!revCtrl.idk">
                 [25 Dec, 1995]
                 <input type="text" ng-model="revCtrl.date" class="form-control">
             </div>
         </div>
         <br>
-        <div class="row">
+        <div class="row" ng-if="revCtrl.certificate.revocation == null">
             <button type="button" class="btn btn-danger" ng-click="revCtrl.submitRevoke()">Revoke certificate</button>
+        </div>
+        <div class="row"  ng-if="revCtrl.certificate.revocation.fullyRevoked === false">
+            <button type="button" class="btn btn-danger" ng-click="revCtrl.fullyRevoke()">Fully Revoke certificate</button>
         </div>
     </div>
 </div>

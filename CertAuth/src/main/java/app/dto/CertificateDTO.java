@@ -12,6 +12,11 @@ public class CertificateDTO extends AbstractEntityDTO {
     protected Date validTo;
     protected String cerFileName;
     protected RevocationDTO revocation;
+    protected CertStatus status;
+
+    public enum CertStatus{
+        VALID, EXPIRED, REVOKED, ON_HOLD
+    }
 
     public CertificateDTO() { }
 
@@ -77,5 +82,13 @@ public class CertificateDTO extends AbstractEntityDTO {
 
     public void setRevocation(RevocationDTO revocation) {
         this.revocation = revocation;
+    }
+
+    public CertStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CertStatus status) {
+        this.status = status;
     }
 }

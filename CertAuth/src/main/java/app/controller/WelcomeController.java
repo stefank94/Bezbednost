@@ -9,7 +9,7 @@ public class WelcomeController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String welcome(){
-		return "static/html/index.html";
+		return "static/index.html";
 	}
 
 }

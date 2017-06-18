@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -72,7 +73,7 @@ public class X509Helper {
         return null;
     }
 
-    public static void makeExtensions(X509v3CertificateBuilder builder, CertificateData data, PublicKey publicKey){
+    public static void makeExtensions(X509v3CertificateBuilder builder, CertificateData data, PublicKey publicKey, CertificateAuthority issuer, X500Name issuerName){
         try {
             SubjectKeyIdentifier ski = createSubjectKeyIdentifier(publicKey);
             data.setSubjectKeyIdentifier(ski.getEncoded().toString());
@@ -81,6 +82,11 @@ public class X509Helper {
             builder.addExtension(Extension.keyUsage, false, makeKeyUsage(data));
             if (!data.isCA())
                 builder.addExtension(Extension.extendedKeyUsage, false, makeExtendedKeyUsage(data));
+            if (issuer != null) {
+                String id = issuer.getCertificate().getCertificateData().getSubjectKeyIdentifier();
+                AuthorityKeyIdentifier aki = new AuthorityKeyIdentifier(new GeneralNames(new GeneralName(issuerName)), new BigInteger(id));
+                builder.addExtension(Extension.authorityKeyIdentifier, false, aki);
+            }
         } catch (CertIOException e) {
             e.printStackTrace();
         } catch (IOException e) {

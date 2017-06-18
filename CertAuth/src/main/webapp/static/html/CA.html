@@ -54,10 +54,14 @@
                 <div class="col-md-2">
                     <a href="/#/addChildCA/{{caCtrl.CA.id}}"><button type="button" class="btn btn-success">Add child CA</button></a>
                 </div>
-                <div class="col-md-offset1 col-md-3">
-                    <button type="button" class="btn btn-danger">Revoke certificate</button>
+                <div class="col-md-offset1 col-md-3" ng-if="caCtrl.CA.certificate.status === 'VALID' || caCtrl.CA.certificate.status === 'ON_HOLD'">
+                    <a href="/#/revoke/{{caCtrl.CA.certificate.id}}"><button type="button" class="btn btn-danger">Revoke certificate</button></a>
                 </div>
             </div>
         </div>
+        <br>
+        <a href="http://localhost:8080/crl/{{caCtrl.CA.crlInformation.crlFilename}}" target="_self" download="{{caCtrl.CA.crlInformation.crlFilename}}">
+            <button type="button" class="btn btn-primary" >Download CRL</button>
+        </a>
     </div>
 </div>

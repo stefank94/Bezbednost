@@ -91,8 +91,7 @@ public class CAServiceImpl implements CAService {
             X500Name subjectX500 = X509Helper.makeX500Name(subjectData);
 
             // Certificate identifier
-            SecureRandom random = new SecureRandom();
-            int randomNumber = random.nextInt(Integer.MAX_VALUE - 1);
+            int randomNumber = certificateService.generateSerialNumber();
 
             KeyPair subjectKeyPair = null;
             if (issuer != null) {
@@ -118,7 +117,7 @@ public class CAServiceImpl implements CAService {
                     subjectX500,
                     subjectKeyPair.getPublic());
 
-            X509Helper.makeExtensions(certGen, subjectData, subjectKeyPair.getPublic());
+            X509Helper.makeExtensions(certGen, subjectData, subjectKeyPair.getPublic(), issuer, issuerX500);
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();

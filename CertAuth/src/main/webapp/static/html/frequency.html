@@ -1,0 +1,39 @@
+<div class="container" ng-init="freqCtrl.load()">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>Set CRL generation frequency for
+                <span ng-if="freqCtrl.all"> all CAs</span>
+                <span ng-if="!freqCtrl.all"> CA</span>
+            </h3>
+            <br><hr><br>
+        </div>
+        <div class="row" ng-if="!freqCtrl.all">
+            <div class="col-md-6">
+                <label>Certificate Authority: </label>
+            </div>
+            <div class="col-md-6">
+                <a href="/#/ca/{{freqCtrl.id}}">View CA</a>
+            </div>
+        </div>
+        <div class="row" ng-if="!freqCtrl.all">
+            <div class="col-md-6">
+                <label>Current frequency: </label>
+            </div>
+            <div class="col-md-6">
+                <label>[CURRENT FREQUENCY]</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>New frequency: </label>
+            </div>
+            <div class="col-md-6">
+                <label>[NEW FREQUENCY]</label>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <button type="button" class="btn btn-success" ng-click="freqCtrl.save()">Save</button>
+        </div>
+    </div>
+</div>

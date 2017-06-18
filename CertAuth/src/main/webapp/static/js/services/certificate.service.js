@@ -36,8 +36,8 @@
             return $http.put(baseUrl + 'api/cert/restore/' + id);
         }
 
-        function fullyRevokeCertificate(id){
-            return $http.put(baseUrl + 'api/cert/fullyRevoke/' + id);
+        function fullyRevokeCertificate(id, reason){
+            return $http.put(baseUrl + 'api/cert/fullyRevoke/' + id, reason);
         }
 
     });

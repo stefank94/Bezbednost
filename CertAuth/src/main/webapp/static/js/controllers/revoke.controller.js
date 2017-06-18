@@ -3,9 +3,9 @@
     'use strict';
 
     angular.module('certApp').controller('RevokeController', RevokeController);
-    RevokeController.$inject = ['userService', '$window', 'toastr', '$routeParams', 'certService'];
+    RevokeController.$inject = ['$window', 'toastr', '$routeParams', 'certService'];
 
-    function RevokeController(userService, $window, toastr, $routeParams, certService){
+    function RevokeController($window, toastr, $routeParams, certService){
 
         var vm = this;
         vm.revocation = {
@@ -16,17 +16,26 @@
         };
         vm.idk = false;
         vm.date = '';
+        vm.certificate = {};
 
         //
 
         vm.initRevoke = initRevoke;
         vm.submitRevoke = submitRevoke;
+        vm.fullyRevoke = fullyRevoke;
 
         //
 
         function initRevoke(){
             if ($routeParams && $routeParams.id){
                 vm.revocation.certificate = $routeParams.id;
+                certService.getCertificateByID($routeParams.id)
+                    .then(function (data) {
+                        vm.certificate = data.data;
+                    })
+                    .catch(function (){
+                        console.log('Could not load certificate.');
+                    });
             }
         }
 
@@ -44,6 +53,17 @@
             certService.revokeCertificate(vm.revocation)
                 .then(function (data){
                     toastr.info('Certificate revoked!');
+                    $window.location.href = '/#/cert/' + data.data.id;
+                })
+                .catch(function (error) {
+                    toastr.error(error.data.message);
+                });
+        }
+
+        function fullyRevoke(){
+            certService.fullyRevokeCertificate(vm.certificate.id, vm.revocation.reason)
+                .then(function (data) {
+                    toastr.info('Certificate fully revoked.');
                     $window.location.href = '/#/cert/' + data.data.id;
                 })
                 .catch(function (error) {

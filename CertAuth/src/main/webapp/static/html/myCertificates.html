@@ -10,6 +10,11 @@
                     <label>Name: </label>
                     <br>
                     <label>{{cert.certificateData.commonName}}</label>
+                    <br>
+                    <span class="label label-primary" ng-if="cert.status ==='VALID'">valid</span>
+                    <span class="label label-default" ng-if="cert.status ==='EXPIRED'">expired</span>
+                    <span class="label label-danger" ng-if="cert.status ==='REVOKED'">revoked</span>
+                    <span class="label label-warning" ng-if="cert.status ==='ON_HOLD'">on hold</span>
                 </div>
                 <div class="col-md-6 col-md-offset-1">
                     <div class="row">

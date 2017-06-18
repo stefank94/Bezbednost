@@ -51,6 +51,9 @@ public class CertificateServiceImpl implements CertificateService {
     @Autowired
     private RevocationRepository revocationRepository;
 
+    @Autowired
+    private CertificateDataRepository certificateDataRepository;
+
     private static final String folder = "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "certificates" + File.separator;
 
     // -------------------------------------------------
@@ -76,8 +79,7 @@ public class CertificateServiceImpl implements CertificateService {
             PublicKey subjectPublicKey = getPublicKey(request.getCertificateData().getPublicKey(),
                     request.getCertificateData().getKeyAlgorithm());
 
-            SecureRandom random = new SecureRandom();
-            int randomNumber = random.nextInt(Integer.MAX_VALUE - 1);
+            int randomNumber = generateSerialNumber();
 
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerX500,
                     new BigInteger(Integer.toString(randomNumber)),
@@ -86,7 +88,7 @@ public class CertificateServiceImpl implements CertificateService {
                     subjectX500,
                     subjectPublicKey);
 
-            X509Helper.makeExtensions(certGen, request.getCertificateData(), subjectPublicKey);
+            X509Helper.makeExtensions(certGen, request.getCertificateData(), subjectPublicKey, cA, issuerX500);
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
@@ -121,6 +123,19 @@ public class CertificateServiceImpl implements CertificateService {
 
         return null;
 
+    }
+
+    @Override
+    public int generateSerialNumber(){
+        int randomNumber;
+        CertificateData data;
+        do {
+            SecureRandom random = new SecureRandom();
+            randomNumber = random.nextInt(Integer.MAX_VALUE - 1);
+
+            data = certificateDataRepository.findBySerialNumber(randomNumber);
+        } while (data != null);
+        return randomNumber;
     }
 
     @Override

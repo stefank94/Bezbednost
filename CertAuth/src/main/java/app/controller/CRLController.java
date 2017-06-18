@@ -21,6 +21,10 @@ public class CRLController {
 
     // ---------------------------
 
-
+    @RequestMapping(value = "/pliz", method = RequestMethod.GET)
+    public void plizMejkCRL(){
+        CertificateAuthority ca = caService.getRootCA();
+        crlService.issueCRL(ca);
+    }
 
 }

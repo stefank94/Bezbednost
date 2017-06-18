@@ -30,4 +30,6 @@ public interface CertificateService {
     Certificate fullyRevokeCertificateOnHold(int id, User logged, String reason) throws EntityNotFoundException, ActionNotPossibleException,
             NotPermittedException, InvalidDataException;
 
+    int generateSerialNumber();
+
 }
