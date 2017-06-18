@@ -1,0 +1,72 @@
+<div class="container" ng-init="revCtrl.initRevoke()">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>Revoke certificate</h3>
+        </div>
+        <br><hr><br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Certificate:</label>
+            </div>
+            <div class="col-md-6">
+                <a href="/#/cert/{{revCtrl.revocation.certificate}}">View certificate</a>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Type of revocation:</label>
+            </div>
+            <div class="col-md-6">
+                <form>
+                    <div class="radio">
+                        <label><input type="radio" data-ng-model="revCtrl.revocation.fullyRevoked" data-ng-value="true">Fully revoke</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" data-ng-model="revCtrl.revocation.fullyRevoked" data-ng-value="false">Put on hold</label>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div class="row" ng-show="revCtrl.revocation.fullyRevoked">
+            <div class="col-md-6">
+                <label>Reason: </label>
+            </div>
+            <div class="col-md-6">
+                <select class="form-control" ng-model="revCtrl.revocation.reason">
+                    <option selected value="keyCompromise">Private key compromised</option>
+                    <option value="caCompromise">CA compromised</option>
+                    <option value="affiliationChanged">Affiliation changed</option>
+                    <option value="superseded">Certificate superseded</option>
+                    <option value="cessationOfOperation">Cessation of operation</option>
+                    <option value="removeFromCRL">Remove from CRL</option>
+                    <option value="privilegeWithdrawn">Privilege withdrawn</option>
+                    <option value="aACompromise">aACompromise</option>
+                    <option value="unspecified">Unspecified</option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>When do you believe the certificate became invalid? </label>
+            </div>
+            <div class="col-md-6">
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="revCtrl.idk">I don't know</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-6"  ng-show="!revCtrl.idk">
+                [25 Dec, 1995]
+                <input type="text" ng-model="revCtrl.date" class="form-control">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <button type="button" class="btn btn-danger" ng-click="revCtrl.submitRevoke()">Revoke certificate</button>
+        </div>
+    </div>
+</div>

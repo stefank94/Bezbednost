@@ -170,7 +170,7 @@ public class CertificateServiceImpl implements CertificateService {
             if (cert.getRevocation() == null){
                 Revocation revocation = new Revocation();
                 Date now = new Date();
-                if (now.before(revocationDTO.getInvalidityDate()))
+                if (revocationDTO.getInvalidityDate() != null && now.before(revocationDTO.getInvalidityDate()))
                     throw new InvalidDataException("Invalidity date cannot be in the future.");
                 revocation.setInvalidityDate(revocationDTO.getInvalidityDate());
                 revocation.setCertificate(cert);
@@ -180,11 +180,16 @@ public class CertificateServiceImpl implements CertificateService {
                     throw new InvalidDataException("Invalid certificate revocation reason.");
                 else
                     revocation.setReason(revocationDTO.getReason());
-                revocation.setFullyRevoked(revocation.isFullyRevoked());
+                revocation.setFullyRevoked(revocationDTO.isFullyRevoked());
                 revocation.setRevocationDate(now);
                 cert.setRevocation(revocation);
 
-                return save(cert);
+                Certificate savedCert = save(cert);
+                if (savedCert.getCertificateData().isCA())
+                    revokeIssuedCertificates(savedCert.getCa(), revocationDTO.getInvalidityDate());
+
+                return savedCert;
+
             } else
                 throw new ActionNotPossibleException("This certificate has already been revoked.");
         } else
@@ -205,6 +210,7 @@ public class CertificateServiceImpl implements CertificateService {
             cert.setRevocation(null);
             Certificate savedCertificate = certificateRepository.save(cert);
             revocationRepository.delete(rev);
+
             return savedCertificate;
         } else
             throw new NotPermittedException("You do not have permission to revoke this certificate.");
@@ -226,11 +232,32 @@ public class CertificateServiceImpl implements CertificateService {
                 throw new ActionNotPossibleException("Invalid certificate revocation reason.");
             rev.setReason(reason);
             revocationRepository.save(rev);
+
+            if (cert.getCertificateData().isCA())
+                revokeIssuedCertificates(cert.getCa(), rev.getInvalidityDate());
+
             return certificateRepository.findOne(id);
         } else
             throw new NotPermittedException("You do not have permission to revoke this certificate.");
     }
 
+    private void revokeIssuedCertificates(CertificateAuthority ca, Date invalidityDate){
+        for (Certificate cert : ca.getIssuedCertificates()){
+            Revocation rev = cert.getRevocation();
+            if (rev == null || rev.getReason().equals("certificateHold")){
+                Revocation newRev = new Revocation();
+                newRev.setReason("cACompromise");
+                newRev.setRevocationDate(new Date());
+                newRev.setInvalidityDate(invalidityDate);
+                newRev.setFullyRevoked(true);
+                newRev.setCertificate(cert);
+                cert.setRevocation(newRev);
+                certificateRepository.save(cert);
+                if (cert.getCertificateData().isCA())
+                    revokeIssuedCertificates(cert.getCa(), invalidityDate);
+            }
+        }
+    }
 
     private PublicKey getPublicKey(String publicKeyString, String keyAlgorithm){
         try {

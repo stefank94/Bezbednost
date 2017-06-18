@@ -16,7 +16,8 @@
         vm.isAdmin = userService.isAdmin;
         vm.getLoggedInUser = userService.getLoggedInUser;
         vm.getCertificate = getCertificate;
-        vm.downloadCertificate = downloadCertificate;
+        vm.restore = restore;
+        vm.fullyRevoke =fullyRevoke;
 
         //
 
@@ -26,9 +27,6 @@
                 certService.getCertificateByID(id)
                     .then(function(data){
                         vm.certificate = data.data;
-                        console.log(vm.certificate);
-                        console.log(vm.isAdmin());
-                        console.log(vm.getLoggedInUser());
                     })
                     .catch(function(error){
                         toastr.error(error.data.message);
@@ -37,8 +35,26 @@
                 $window.location.href = "/#/caList";
         }
 
-        function downloadCertificate(){
+        function restore(){
+            certService.restoreCertificate(vm.certificate.id)
+                .then(function (data) {
+                    toastr.info('Certificate restored.');
+                    vm.certificate = data.data;
+                })
+                .catch(function (error) {
+                    toastr.error(error.data.message);
+                });
+        }
 
+        function fullyRevoke(){
+            certService.fullyRevokeCertificate(vm.certificate.id)
+                .then(function (data) {
+                    toastr.info('Certificate fully revoked.');
+                    vm.certificate = data.data;
+                })
+                .catch(function (error) {
+                    toastr.error(error.data.message);
+                });
         }
 
     }

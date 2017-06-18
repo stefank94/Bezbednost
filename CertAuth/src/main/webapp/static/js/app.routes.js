@@ -66,6 +66,11 @@
                 controller: 'CreateCSRController',
                 controllerAs: 'csrCtrl'
             })
+            .when('/revoke/:id', {
+                templateUrl: 'static/html/revokeCertificate.html',
+                controller: 'RevokeController',
+                controllerAs: 'revCtrl'
+            })
             .otherwise({
                 redirectTo: '/'
             });

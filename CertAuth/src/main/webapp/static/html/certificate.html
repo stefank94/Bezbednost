@@ -103,8 +103,10 @@
                 <button type="button" class="btn btn-primary">Download certificate</button>
             </a>
         </div>
-        <div class="row" ng-if="certCtrl.isAdmin() || (certCtrl.certificate.user === certCtrl.getLoggedInUser().username && certCtrl.certificate.user != null)">
-            <button type="button" class="btn btn-danger">Revoke certificate <span class="glyphicon glyphicon-remove"></span></button>
+        <div class="row" ng-if="certCtrl.isAdmin() || (certCtrl.certificate.user === certCtrl.getLoggedInUser().email && certCtrl.certificate.user != null)">
+            <a href="/#/revoke/{{certCtrl.certificate.id}}" ng-if="certCtrl.certificate.revocation == null"><button type="button" class="btn btn-danger" >Revoke certificate <span class="glyphicon glyphicon-remove"></span></button></a>
+            <button type="button" class="btn btn-warning" ng-if="certCtrl.certificate.revocation && !certCtrl.certificate.revocation.fullyRevoked" ng-click="certCtrl.restore()">Restore certificate</button>
+            <button type="button" class="btn btn-danger" ng-if="certCtrl.certificate.revocation && !certCtrl.certificate.revocation.fullyRevoked" ng-click="certCtrl.fullyRevoke()">Fully revoke certificate</button>
         </div>
     </div>
 </div>

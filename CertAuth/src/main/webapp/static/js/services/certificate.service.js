@@ -6,7 +6,10 @@
         return {
             getCertificateByID : getCertificateByID,
             getMyCertificates: getMyCertificates,
-            downloadCertificate: downloadCertificate
+            downloadCertificate: downloadCertificate,
+            revokeCertificate: revokeCertificate,
+            restoreCertificate: restoreCertificate,
+            fullyRevokeCertificate: fullyRevokeCertificate
         };
 
         //
@@ -23,6 +26,18 @@
             return $http.get(baseUrl + 'api/cert/download/' + id, {
                 responseType: 'arraybuffer'
             });
+        }
+
+        function revokeCertificate(revoke){
+            return $http.post(baseUrl + 'api/cert/revoke', revoke);
+        }
+
+        function restoreCertificate(id){
+            return $http.put(baseUrl + 'api/cert/restore/' + id);
+        }
+
+        function fullyRevokeCertificate(id){
+            return $http.put(baseUrl + 'api/cert/fullyRevoke/' + id);
         }
 
     });
