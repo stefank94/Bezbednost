@@ -34,7 +34,7 @@ public class CertificateAuthority extends AbstractEntity {
     @Column(name = "carole", nullable = false)
     protected CARole caRole;
 
-    @OneToMany(mappedBy = "issuer")
+    @OneToMany(mappedBy = "issuer", fetch = FetchType.EAGER)
     protected List<Certificate> issuedCertificates;
 
     @OneToOne(mappedBy = "ca", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

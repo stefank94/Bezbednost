@@ -47,8 +47,8 @@
                     toastr.info("Welcome.");
                     $window.location.href = '/#/home';
                 })
-                .catch(function(error){
-                    toastr.error("Login failed");
+                .catch(function(){
+                    toastr.error('Login failed.');
                 });
         }
 

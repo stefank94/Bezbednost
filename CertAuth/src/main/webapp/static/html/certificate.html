@@ -35,7 +35,7 @@
                 <label>Valid from: </label>
             </div>
             <div class="col-md-6">
-                <label>{{certCtrl.certificate.validFrom}}</label>
+                <label>{{certCtrl.certificate.validFrom | showDateFilter}}</label>
             </div>
         </div>
         <div class="row">
@@ -43,7 +43,7 @@
                 <label>Valid to: </label>
             </div>
             <div class="col-md-6">
-                <label>{{certCtrl.certificate.validTo}}</label>
+                <label>{{certCtrl.certificate.validTo | showDateFilter}}</label>
             </div>
         </div>
         <div class="row">

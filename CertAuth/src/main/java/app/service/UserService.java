@@ -16,4 +16,6 @@ public interface UserService {
 
     boolean checkPassword(User user, String sentPassword);
 
+    String hashPassword(String password, String salt);
+
 }

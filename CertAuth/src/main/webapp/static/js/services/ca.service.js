@@ -4,14 +4,15 @@
     angular.module('certApp').factory('caService', function($http, baseUrl, $window){
 
         return {
-            findCAByID : findCAByID,
-            getRootCA : getRootCA,
-            getIntermediateCAs : getIntermediateCAs,
+            findCAByID: findCAByID,
+            getRootCA: getRootCA,
+            getIntermediateCAs: getIntermediateCAs,
             CertificateAuthority: CertificateAuthority,
             create: create,
             getDefaultCRLGeneration: getDefaultCRLGeneration,
             rescheduleCA: rescheduleCA,
-            rescheduleAllCAs: rescheduleAllCAs
+            rescheduleAllCAs: rescheduleAllCAs,
+            getBottomCAs: getBottomCAs
         };
 
         /////////////////
@@ -26,6 +27,10 @@
 
         function getIntermediateCAs(){
             return $http.get(baseUrl + 'api/ca/intermediateCAs');
+        }
+
+        function getBottomCAs(){
+            return $http.get(baseUrl + 'api/ca/bottomCAs');
         }
 
         function CertificateAuthority(){

@@ -45,7 +45,13 @@ public class CAController {
 
     @RequestMapping(value = "/intermediateCAs", method = RequestMethod.GET)
     public ResponseEntity<List<CertificateAuthorityDTO>> getIntermediateCAs(){
-        List<CertificateAuthority> list = caService.getIntermediateCAs();
+        List<CertificateAuthority> list = caService.getByRole(CertificateAuthority.CARole.INTERMEDIATE);
+        return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityListToDTO(list), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/bottomCAs", method = RequestMethod.GET)
+    public ResponseEntity<List<CertificateAuthorityDTO>> getBottomCAs(){
+        List<CertificateAuthority> list = caService.getBottomCAs();
         return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityListToDTO(list), HttpStatus.OK);
     }
 

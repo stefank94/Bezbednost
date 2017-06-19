@@ -7,20 +7,20 @@ import app.exception.EntityNotFoundException;
 import app.exception.NotPermittedException;
 import app.repository.UserRepository;
 import app.service.UserService;
+import app.util.Base64Utility;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     // -----------------------------------
 
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
             throw new ActionNotPossibleException("Cannot use the old password again.");
         String salt = generateSalt();
         loggedInUser.setSalt(salt);
-        loggedInUser.setPassword(passwordEncoder.encode(twoStrings.string2 + salt));
+        loggedInUser.setPassword(hashPassword(twoStrings.string2, salt));
         userRepository.save(loggedInUser);
     }
 
@@ -51,8 +51,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkPassword(User user, String sentPassword) {
-        System.out.println("in check password");
-        return passwordEncoder.matches(sentPassword + user.getSalt(), user.getPassword());
+        String hashed = hashPassword(sentPassword, user.getSalt());
+        return user.getPassword().equals(hashed);
+    }
+
+    @Override
+    public String hashPassword(String password, String salt) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] bytes = digest.digest((password + salt).getBytes(StandardCharsets.UTF_8));
+            return Base64Utility.encode(bytes);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

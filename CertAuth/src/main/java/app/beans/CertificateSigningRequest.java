@@ -7,7 +7,7 @@ import java.util.Date;
 @Entity
 public class CertificateSigningRequest extends AbstractEntity {
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "certificatedata", nullable = false)
     protected CertificateData certificateData;
 
@@ -15,7 +15,7 @@ public class CertificateSigningRequest extends AbstractEntity {
     @JoinColumn(name = "user", referencedColumnName = "id")
     protected User user;
 
-    @Column(name = "revocationDate", nullable = false)
+    @Column(name = "date", nullable = false)
     protected Date date;
 
     public enum CSRState{

@@ -6,12 +6,14 @@ import app.exception.ActionNotPossibleException;
 import app.exception.EntityNotFoundException;
 import app.exception.InvalidDataException;
 import app.exception.NotPermittedException;
+import app.util.KeyStoreCredentials;
+
 import java.security.cert.X509Certificate;
 import java.util.List;
 
 public interface CertificateService {
 
-    Certificate generateCertificate(CertificateAuthority cA, CertificateSigningRequest cr);
+    Certificate generateCertificate(CertificateAuthority cA, CertificateSigningRequest cr, KeyStoreCredentials keyStoreCredentials);
 
     Certificate findOne(int id) throws EntityNotFoundException;
 
@@ -31,5 +33,7 @@ public interface CertificateService {
             NotPermittedException, InvalidDataException;
 
     int generateSerialNumber();
+
+    boolean isValid(Certificate cert);
 
 }

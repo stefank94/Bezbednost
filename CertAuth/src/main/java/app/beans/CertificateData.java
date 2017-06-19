@@ -15,25 +15,25 @@ public class CertificateData extends AbstractEntity {
     @Column(name = "commonname", nullable = false)
     protected String commonName;
 
-    @Column(name = "givenname", nullable = false)
+    @Column(name = "givenname")
     protected String givenName;
 
-    @Column(name = "surname", nullable = false)
+    @Column(name = "surname")
     protected String surname;
 
-    @Column(name = "organization", nullable = false)
+    @Column(name = "organization")
     protected String organization;
 
-    @Column(name = "organizationalunit", nullable = false)
+    @Column(name = "organizationalunit")
     protected String organizationalUnit;
 
-    @Column(name = "countrycode", nullable = false)
+    @Column(name = "countrycode")
     protected String countryCode;
 
     @Column(name = "emailaddress")
     protected String emailAddress;
 
-    @Column(name = "serialNumber", unique = true)
+    @Column(name = "serialNumber")
     protected int serialNumber;
 
     @Column(name = "isCA", nullable = false)

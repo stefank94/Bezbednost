@@ -1,6 +1,7 @@
 package app.util;
 
 import java.math.BigInteger;
+import java.security.PrivateKey;
 import java.security.SecureRandom;
 
 public class KeyStoreCredentials {
@@ -9,6 +10,7 @@ public class KeyStoreCredentials {
     private String keyStoreAlias;
     private String keyStorePassword;
     private String privateKeyPassword;
+    private PrivateKey privateKey;
 
     public KeyStoreCredentials() { }
 
@@ -54,5 +56,13 @@ public class KeyStoreCredentials {
 
     public void setPrivateKeyPassword(String privateKeyPassword) {
         this.privateKeyPassword = privateKeyPassword;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
     }
 }

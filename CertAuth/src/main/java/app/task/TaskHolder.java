@@ -52,7 +52,7 @@ public class TaskHolder {
         public void run() {
             System.out.println("######### Issuing CRL number " + (ca.getCrlInformation().getCrlNumber() + 1) + " for CA with id: " + ca.getId() + "########");
             scheduleNextExecution();
-            latestExecutionDate = crlService.issueCRL(ca, nextExecutionDate);
+            latestExecutionDate = crlService.issueCRL(ca.getId(), nextExecutionDate);
         }
 
     }

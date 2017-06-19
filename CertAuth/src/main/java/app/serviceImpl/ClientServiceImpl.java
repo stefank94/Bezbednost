@@ -22,9 +22,6 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     // ---------------------------------------
 
     @Override
@@ -38,7 +35,7 @@ public class ClientServiceImpl implements ClientService {
         newClient.setEmail(dto.getUsername());
         String salt = userService.generateSalt();
         newClient.setSalt(salt);
-        newClient.setPassword(passwordEncoder.encode(dto.getPassword() + salt));
+        newClient.setPassword(userService.hashPassword(dto.getPassword(), salt));
         return clientRepository.save(newClient);
     }
 }

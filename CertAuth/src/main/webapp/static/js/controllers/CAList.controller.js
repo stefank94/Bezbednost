@@ -9,8 +9,8 @@
         var vm = this;
 
         vm.rootCA = {};
-        vm.CAs = [];
-
+        vm.intermediateCAs = [];
+        vm.bottomCAs = [];
 
         //
 
@@ -28,7 +28,14 @@
                 });
             caService.getIntermediateCAs()
                 .then(function(data){
-                    vm.CAs = data.data;
+                    vm.intermediateCAs = data.data;
+                })
+                .catch(function(error){
+                    toastr.error(error.data.message);
+                });
+            caService.getBottomCAs()
+                .then(function(data){
+                    vm.bottomCAs = data.data;
                 })
                 .catch(function(error){
                     toastr.error(error.data.message);

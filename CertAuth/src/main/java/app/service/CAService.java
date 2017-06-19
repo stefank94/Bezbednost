@@ -1,5 +1,6 @@
 package app.service;
 
+import app.beans.Certificate;
 import app.beans.CertificateAuthority;
 import app.beans.CertificateData;
 import app.dto.CertificateAuthorityDTO;
@@ -14,11 +15,15 @@ public interface CAService {
 
     CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateAuthorityDTO dto);
 
-    CertificateAuthority generateRootCA(CertificateData data);
+    CertificateAuthority generateRootCA();
+
+    void generateHTTPSCertificate();
 
     CertificateAuthority findById(int id) throws EntityNotFoundException;
 
-    List<CertificateAuthority> getIntermediateCAs();
+    List<CertificateAuthority> getByRole(CertificateAuthority.CARole role);
+
+    List<CertificateAuthority> getBottomCAs();
 
     List<CertificateAuthority> getAllCAs();
 

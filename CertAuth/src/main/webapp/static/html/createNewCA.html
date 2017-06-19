@@ -5,47 +5,52 @@
         </div>
         <hr><br><br>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label>Issuer: </label>
             </div>
             <div class="col-md-6">
                 <a href="/#/ca/{{caCtrl.issuer}}">See issuer</a>
             </div>
         </div>
+        <br>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label>Common name: </label>
             </div>
             <div class="col-md-6">
                 <input type="text" ng-model="caCtrl.CA.certificate.certificateData.commonName">
             </div>
         </div>
+        <br>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label>Given name: </label>
             </div>
             <div class="col-md-6">
                 <input type="text" ng-model="caCtrl.CA.certificate.certificateData.givenName">
             </div>
         </div>
+        <br>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label>Surname: </label>
             </div>
             <div class="col-md-6">
                 <input type="text" ng-model="caCtrl.CA.certificate.certificateData.surname">
             </div>
         </div>
+        <br>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label>Organizational unit: </label>
             </div>
             <div class="col-md-6">
                 <input type="text" ng-model="caCtrl.CA.certificate.certificateData.organizationalUnit">
             </div>
         </div>
+        <br>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label>CA Role: </label>
             </div>
             <div class="col-md-6">
@@ -58,6 +63,7 @@
                 </select>
             </div>
         </div>
+        <br>
         <div class="row">
             <div class="col-md-6">
                 <label>Duration: </label>
@@ -71,6 +77,7 @@
                 </select>
             </div>
         </div>
+        <br>
         <div class="row" ng-if="caCtrl.CA.role !== 'INTERMEDIATE'">
             <div class="col-md-6">
                 <label>Duration of issued certificates: </label>

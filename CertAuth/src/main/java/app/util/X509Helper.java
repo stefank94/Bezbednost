@@ -87,14 +87,8 @@ public class X509Helper {
                 // extended key usage
                 builder.addExtension(Extension.extendedKeyUsage, false, makeExtendedKeyUsage(data));
             }
-            if (issuer != null) {
-                // authority key identifier
-                String id = issuer.getCertificate().getCertificateData().getSubjectKeyIdentifier();
-                GeneralName issuerGeneralName = new GeneralName(issuerName);
-                AuthorityKeyIdentifier aki = new AuthorityKeyIdentifier(new GeneralNames(issuerGeneralName), new BigInteger(id));
-                builder.addExtension(Extension.authorityKeyIdentifier, false, aki);
                 //TODO: authority information access
-            }
+
         } catch (CertIOException e) {
             e.printStackTrace();
         } catch (IOException e) {

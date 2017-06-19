@@ -4,6 +4,7 @@ import app.beans.*;
 import app.exception.ActionNotPossibleException;
 import app.exception.EntityAlreadyExistsException;
 import app.exception.EntityNotFoundException;
+import app.repository.CertificateDataRepository;
 import app.repository.CertificateRequestRepository;
 import app.service.CAService;
 import app.service.CertificateRequestService;
@@ -41,6 +42,9 @@ public class CertificateRequestServiceImpl implements CertificateRequestService 
     @Autowired
     private CAService caService;
 
+    @Autowired
+    private CertificateDataRepository certificateDataRepository;
+
     // ---------------------------------------------------------------
 
     @Override
@@ -67,7 +71,7 @@ public class CertificateRequestServiceImpl implements CertificateRequestService 
         if (req == null)
             throw new EntityNotFoundException("Certificate Request not found with ID: " + id);
         CertificateAuthority ca = caService.getRandomCAForUsage(req.getCertificateData().getCertUsage());
-        Certificate cert = certificateService.generateCertificate(ca, req);
+        Certificate cert = certificateService.generateCertificate(ca, req, null);
         req.setState(CertificateSigningRequest.CSRState.APPROVED);
         req.setCertificate(cert);
         certificateRequestRepository.save(req);

@@ -2,14 +2,15 @@ package app.repository;
 
 import app.beans.CertificateAuthority;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface CARepository extends JpaRepository<CertificateAuthority, Integer> {
 
-    CertificateAuthority findByIssuerIsNull();
-
-    List<CertificateAuthority> findByIssuerNotNull();
+    List<CertificateAuthority> findByIssuerIsNull();
 
     List<CertificateAuthority> findByCaRole(CertificateAuthority.CARole role);
 

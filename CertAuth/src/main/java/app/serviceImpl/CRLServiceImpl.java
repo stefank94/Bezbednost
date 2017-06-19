@@ -50,13 +50,17 @@ public class CRLServiceImpl implements CRLService{
     private CAService caService;
 
     @Autowired
+    private CARepository caRepository;
+
+    @Autowired
     private TaskManager taskManager;
 
     // -------------------------------------------------------
 
     @Override
-    public Date issueCRL(CertificateAuthority ca, Date nextUpdate) { // Returns date of execution
+    public Date issueCRL(int id, Date nextUpdate) { // Returns date of execution
         try {
+            CertificateAuthority ca = caRepository.findOne(id);
             // Information about this CA's CRLs
             CRLInformation crlInformation = ca.getCrlInformation();
             // Private key from the issuing CA
@@ -72,6 +76,7 @@ public class CRLServiceImpl implements CRLService{
 
             // add all revoked certificates
             for (Certificate cert : ca.getIssuedCertificates()){
+                System.out.println("Has certificates.");
                 Revocation rev = cert.getRevocation();
                 if (rev != null){
                     int reasonCode = rev.getReasonCode();

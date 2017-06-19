@@ -11,6 +11,7 @@ import app.repository.CSRRepository;
 import app.repository.CertificateDataRepository;
 import app.repository.CertificateRepository;
 import app.repository.RevocationRepository;
+import app.service.CAService;
 import app.service.CertificateService;
 import app.util.*;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -54,12 +55,15 @@ public class CertificateServiceImpl implements CertificateService {
     @Autowired
     private CertificateDataRepository certificateDataRepository;
 
+    @Autowired
+    private CAService caService;
+
     private static final String folder = "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "certificates" + File.separator;
 
     // -------------------------------------------------
 
     @Override
-    public Certificate generateCertificate(CertificateAuthority cA, CertificateSigningRequest request) {
+    public Certificate generateCertificate(CertificateAuthority cA, CertificateSigningRequest request, KeyStoreCredentials keyStoreCredentials) {
         try {
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
             builder = builder.setProvider("BC");
@@ -97,10 +101,10 @@ public class CertificateServiceImpl implements CertificateService {
             X509Certificate x509Certificate = certConverter.getCertificate(certHolder);
 
             request.setState(CertificateSigningRequest.CSRState.APPROVED);
-            csrRepository.save(request);
+            CertificateSigningRequest req = csrRepository.save(request);
 
             Certificate certificate = new Certificate();
-            certificate.setCertificateData(request.getCertificateData());
+            certificate.setCertificateData(req.getCertificateData());
             certificate.setUser(request.getUser());
             certificate.setIssuer(cA);
             certificate.setValidFrom(notBefore);
@@ -110,6 +114,9 @@ public class CertificateServiceImpl implements CertificateService {
             // Save the certificate in a .cer file
             String fileName = writeCerFile(x509Certificate, randomNumber);
             certificate.setCerFileName(fileName);
+
+            if (keyStoreCredentials != null)
+                saveCertificateToKeyStore(keyStoreCredentials, x509Certificate);
 
             Certificate saved = certificateRepository.save(certificate);
 
@@ -125,6 +132,15 @@ public class CertificateServiceImpl implements CertificateService {
 
     }
 
+    private void saveCertificateToKeyStore(KeyStoreCredentials keyStoreCredentials, X509Certificate certificate){
+        KeyStoreWriter writer = new KeyStoreWriter();
+        writer.loadKeyStore(null, keyStoreCredentials.getKeyStorePassword().toCharArray());
+
+        writer.writePrivateKey(keyStoreCredentials.getKeyStoreAlias(), keyStoreCredentials.getPrivateKey(),
+                keyStoreCredentials.getKeyStorePassword().toCharArray(), certificate);
+        writer.saveKeyStore(keyStoreCredentials.getKeyStoreFileName(), keyStoreCredentials.getKeyStorePassword().toCharArray());
+    }
+
     @Override
     public int generateSerialNumber(){
         int randomNumber;
@@ -136,6 +152,14 @@ public class CertificateServiceImpl implements CertificateService {
             data = certificateDataRepository.findBySerialNumber(randomNumber);
         } while (data != null);
         return randomNumber;
+    }
+
+    @Override
+    public boolean isValid(Certificate cert) {
+        if (cert.getRevocation() != null)
+            return false;
+        else
+            return cert.getValidTo().after(new Date());
     }
 
     @Override
@@ -193,8 +217,12 @@ public class CertificateServiceImpl implements CertificateService {
                     revocation.setReason("certificateHold");
                 else if (!Revocation.getValidReasons().contains(revocationDTO.getReason()) || revocationDTO.equals("certificateHold"))
                     throw new InvalidDataException("Invalid certificate revocation reason.");
-                else
+                else {
                     revocation.setReason(revocationDTO.getReason());
+                    CertificateAuthority ca = cert.getCa();
+                    if (ca != null && ca.getCaRole() == CertificateAuthority.CARole.ROOT) // If we're revoking the root CA
+                        caService.generateRootCA(); // create a new root
+                }
                 revocation.setFullyRevoked(revocationDTO.isFullyRevoked());
                 revocation.setRevocationDate(now);
                 cert.setRevocation(revocation);
@@ -250,6 +278,9 @@ public class CertificateServiceImpl implements CertificateService {
 
             if (cert.getCertificateData().isCA())
                 revokeIssuedCertificates(cert.getCa(), rev.getInvalidityDate());
+            CertificateAuthority ca = cert.getCa();
+            if (ca != null && ca.getCaRole() == CertificateAuthority.CARole.ROOT) // If we're revoking the root CA
+                caService.generateRootCA(); // create a new root
 
             return certificateRepository.findOne(id);
         } else

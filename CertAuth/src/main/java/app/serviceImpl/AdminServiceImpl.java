@@ -27,9 +27,6 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     // -------------------------------------
 
     @Override
@@ -46,7 +43,7 @@ public class AdminServiceImpl implements AdminService {
         admin.setSignupDate(new Date());
         String salt = userService.generateSalt();
         admin.setSalt(salt);
-        admin.setPassword(passwordEncoder.encode(dto.getPassword() + salt));
+        admin.setPassword(userService.hashPassword(dto.getPassword(), salt));
         return adminRepository.save(admin);
     }
 

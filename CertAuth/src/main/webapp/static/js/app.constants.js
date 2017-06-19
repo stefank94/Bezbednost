@@ -1,6 +1,6 @@
 (function(){
     'use strict';
 
-    angular.module('certApp').constant('baseUrl', 'http://localhost:8080/');
+    angular.module('certApp').constant('baseUrl', 'https://localhost:9000/');
 
 })();

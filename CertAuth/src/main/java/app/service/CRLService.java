@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CRLService {
 
-    Date issueCRL(CertificateAuthority ca, Date nextUpdate);
+    Date issueCRL(int id, Date nextUpdate);
 
     CRLInformation saveCRLInformation(CRLInformation crlInformation);
 

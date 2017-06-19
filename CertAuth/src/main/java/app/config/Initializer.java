@@ -46,6 +46,7 @@ public class Initializer implements InitializingBean {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
         if (initializeRootCA){
+
             if (caService.getRootCA() != null) { // Don't generate root CA if it already exists,
                 List<CertificateAuthority> all = caService.getAllCAs();
                 crlService.addCAListToSchedule(all); // but add all CAs to CRL generation scheduler.
@@ -58,17 +59,8 @@ public class Initializer implements InitializingBean {
                 FileUtils.cleanDirectory(new File(FOLDER + "keystores" + File.separator));
             } catch (Exception e) { }
 
-            CertificateData data = new CertificateData();
-            data.setCommonName("My Root CA");
-            data.setCA(true);
-            data.setCountryCode("RS");
-            data.setEmailAddress("root@root.com");
-            data.setGivenName("My");
-            data.setSurname("Root CA");
-            data.setKeyAlgorithm("RSA");
-            data.setOrganization("Root CA Organization");
-            data.setOrganizationalUnit("Level 1");
-            caService.generateRootCA(data);
+            caService.generateRootCA();
+            caService.generateHTTPSCertificate();
 
         }
 
