@@ -12,4 +12,8 @@ public interface UserService {
 
     void changePassword(User loggedInUser, TwoStrings twoStrings) throws NotPermittedException, ActionNotPossibleException;
 
+    String generateSalt();
+
+    boolean checkPassword(User user, String sentPassword);
+
 }

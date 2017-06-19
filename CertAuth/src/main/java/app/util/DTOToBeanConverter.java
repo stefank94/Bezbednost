@@ -20,7 +20,6 @@ public class DTOToBeanConverter {
         if (dto == null)
             return null;
         Admin admin = new Admin();
-        admin.setPassword(dto.getPassword());
         admin.setEmail(dto.getEmail());
         return admin;
     }
@@ -30,7 +29,6 @@ public class DTOToBeanConverter {
             return null;
         Client client = new Client();
         client.setEmail(dto.getEmail());
-        client.setPassword(dto.getPassword());
         return client;
     }
 

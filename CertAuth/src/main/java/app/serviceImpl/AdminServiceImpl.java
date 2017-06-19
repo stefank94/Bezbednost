@@ -1,12 +1,19 @@
 package app.serviceImpl;
 
 import app.beans.Admin;
+import app.dto.AdminDTO;
 import app.exception.EntityAlreadyExistsException;
 import app.repository.AdminRepository;
 import app.repository.UserRepository;
 import app.service.AdminService;
+import app.service.UserService;
+import app.util.DTOToBeanConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -17,6 +24,12 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // -------------------------------------
 
     @Override
@@ -25,9 +38,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin create(Admin admin) throws EntityAlreadyExistsException {
+    public Admin create(AdminDTO dto) throws EntityAlreadyExistsException {
+        Admin admin = new Admin();
+        admin.setEmail(dto.getEmail());
         if (userRepository.findByEmail(admin.getEmail()) != null)
             throw new EntityAlreadyExistsException("User already exists with email: " + admin.getEmail());
+        admin.setSignupDate(new Date());
+        String salt = userService.generateSalt();
+        admin.setSalt(salt);
+        admin.setPassword(passwordEncoder.encode(dto.getPassword() + salt));
         return adminRepository.save(admin);
     }
 

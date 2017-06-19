@@ -39,7 +39,8 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<UserDTO> login(@RequestBody LoginUserDTO loginUser) throws EntityNotFoundException{
         User user = userService.findByEmail(loginUser.getUsername());
-        if (user != null && user.getPassword().equals(loginUser.getPassword())){
+        if (user != null && userService.checkPassword(user, loginUser.getPassword())){
+            System.out.println("here");
             securityService.autologin(user.getEmail(), user.getPassword());
             return new ResponseEntity<>(BeanToDTOConverter.userToDTO(user), HttpStatus.OK);
         } else {

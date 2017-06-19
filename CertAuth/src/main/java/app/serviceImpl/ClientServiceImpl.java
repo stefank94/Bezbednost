@@ -5,7 +5,10 @@ import app.dto.LoginUserDTO;
 import app.exception.EntityAlreadyExistsException;
 import app.repository.ClientRepository;
 import app.service.ClientService;
+import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,6 +18,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // ---------------------------------------
 
@@ -27,7 +36,9 @@ public class ClientServiceImpl implements ClientService {
         newClient.setSalt("");
         newClient.setSignupDate(new Date());
         newClient.setEmail(dto.getUsername());
-        newClient.setPassword(dto.getPassword());
+        String salt = userService.generateSalt();
+        newClient.setSalt(salt);
+        newClient.setPassword(passwordEncoder.encode(dto.getPassword() + salt));
         return clientRepository.save(newClient);
     }
 }

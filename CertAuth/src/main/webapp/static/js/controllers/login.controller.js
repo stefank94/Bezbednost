@@ -48,7 +48,7 @@
                     $window.location.href = '/#/home';
                 })
                 .catch(function(error){
-                    toastr.error(error.data.message);
+                    toastr.error("Login failed");
                 });
         }
 

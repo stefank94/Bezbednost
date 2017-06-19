@@ -3,6 +3,7 @@ package app.config;
 import app.beans.Admin;
 import app.beans.CertificateAuthority;
 import app.beans.CertificateData;
+import app.dto.AdminDTO;
 import app.service.AdminService;
 import app.service.CAService;
 import app.service.CRLService;
@@ -72,11 +73,9 @@ public class Initializer implements InitializingBean {
         }
 
         if (!adminService.adminExists()){
-            Admin admin = new Admin();
+            AdminDTO admin = new AdminDTO();
             admin.setEmail("admin@admin.com");
             admin.setPassword("123");
-            admin.setSalt("");
-            admin.setSignupDate(new Date());
             adminService.create(admin);
         }
 
