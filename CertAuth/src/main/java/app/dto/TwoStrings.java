@@ -7,6 +7,11 @@ public class TwoStrings {
 
     public TwoStrings(){}
 
+    public TwoStrings(String string1, String string2){
+        this.string1 = string1;
+        this.string2 = string2;
+    }
+
     public String getString1() {
         return string1;
     }

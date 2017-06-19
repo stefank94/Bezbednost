@@ -20,15 +20,32 @@
                 <label>Current frequency: </label>
             </div>
             <div class="col-md-6">
-                <label>[CURRENT FREQUENCY]</label>
+                <label>{{freqCtrl.ca.crlInformation.frequencyDescription}}</label>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
+                <label>Default frequency: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{freqCtrl.default.freqDesc}}</label>
+            </div>
+        </div>
+        <div class="row" ng-if="!freqCtrl.all">
+            <div class="col-md-offset-9 col-md-3 pull-right">
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="freqCtrl.useDefault">Use default</label>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-hide="freqCtrl.useDefault">
+            <div class="col-md-6">
                 <label>New frequency: </label>
             </div>
             <div class="col-md-6">
-                <label>[NEW FREQUENCY]</label>
+                <select class="form-control" ng-model="freqCtrl.newFreq.cronExp">
+                    <option ng-repeat="f in freqCtrl.options" value="{{f.cronExp}}">{{f.freqDesc}}</option>
+                </select>
             </div>
         </div>
         <br>

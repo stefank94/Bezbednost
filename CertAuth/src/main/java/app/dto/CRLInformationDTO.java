@@ -9,6 +9,8 @@ public class CRLInformationDTO extends AbstractEntityDTO {
     protected Date nextIssued;
     protected String crlFilename;
     protected int crlNumber;
+    protected String cronExpression;
+    protected String frequencyDescription;
 
     public CRLInformationDTO() { }
 
@@ -50,5 +52,21 @@ public class CRLInformationDTO extends AbstractEntityDTO {
 
     public void setCrlNumber(int crlNumber) {
         this.crlNumber = crlNumber;
+    }
+
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
+    }
+
+    public String getFrequencyDescription() {
+        return frequencyDescription;
+    }
+
+    public void setFrequencyDescription(String frequencyDescription) {
+        this.frequencyDescription = frequencyDescription;
     }
 }

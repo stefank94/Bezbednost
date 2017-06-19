@@ -27,8 +27,7 @@ public class CAController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<CertificateAuthorityDTO> create(@RequestBody CertificateAuthorityDTO dto) throws EntityNotFoundException {
         CertificateAuthority issuer = caService.findById(dto.getIssuer());
-        CertificateData data = DTOToBeanConverter.certificateDataDTOToBean(dto.getCertificate().getCertificateData());
-        CertificateAuthority ca = caService.generateCertificateAuthority(issuer, data, dto.getCaRole());
+        CertificateAuthority ca = caService.generateCertificateAuthority(issuer, dto);
         return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityToDTO(ca), HttpStatus.OK);
     }
 

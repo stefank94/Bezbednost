@@ -2,6 +2,7 @@ package app.service;
 
 import app.beans.CertificateAuthority;
 import app.beans.CertificateData;
+import app.dto.CertificateAuthorityDTO;
 import app.exception.ActionNotPossibleException;
 import app.exception.EntityNotFoundException;
 
@@ -11,7 +12,7 @@ public interface CAService {
 
     CertificateAuthority getRootCA();
 
-    CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateData data, CertificateAuthority.CARole role);
+    CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateAuthorityDTO dto);
 
     CertificateAuthority generateRootCA(CertificateData data);
 
@@ -19,6 +20,10 @@ public interface CAService {
 
     List<CertificateAuthority> getIntermediateCAs();
 
+    List<CertificateAuthority> getAllCAs();
+
     CertificateAuthority getRandomCAForUsage(CertificateData.CertUsage usage) throws ActionNotPossibleException;
+
+    CertificateAuthority save(CertificateAuthority ca);
 
 }

@@ -28,6 +28,9 @@ public class CRLInformation extends AbstractEntity {
     @Column(name = "cronexpression")
     protected String cronExpression;
 
+    @Column(name = "frequencydescription")
+    protected String frequencyDescription;
+
     public CRLInformation() { }
 
 
@@ -82,5 +85,13 @@ public class CRLInformation extends AbstractEntity {
 
     public void setCronExpression(String cronExpression) {
         this.cronExpression = cronExpression;
+    }
+
+    public String getFrequencyDescription() {
+        return frequencyDescription;
+    }
+
+    public void setFrequencyDescription(String frequencyDescription) {
+        this.frequencyDescription = frequencyDescription;
     }
 }

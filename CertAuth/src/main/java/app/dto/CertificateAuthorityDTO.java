@@ -8,6 +8,8 @@ public class CertificateAuthorityDTO extends AbstractEntityDTO {
     protected CertificateDTO certificate;
     protected CertificateAuthority.CARole caRole;
     protected CRLInformationDTO crlInformation;
+    protected int durationOfIssuedCertificates; // in months
+    protected int duration; // self duration - in years
 
     public CertificateAuthorityDTO() { }
 
@@ -41,5 +43,21 @@ public class CertificateAuthorityDTO extends AbstractEntityDTO {
 
     public void setCrlInformation(CRLInformationDTO crlInformation) {
         this.crlInformation = crlInformation;
+    }
+
+    public int getDurationOfIssuedCertificates() {
+        return durationOfIssuedCertificates;
+    }
+
+    public void setDurationOfIssuedCertificates(int durationOfIssuedCertificates) {
+        this.durationOfIssuedCertificates = durationOfIssuedCertificates;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

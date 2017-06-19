@@ -105,6 +105,8 @@ public class BeanToDTOConverter {
         dto.setCertificate(certificateToDTO(ca.getCertificate()));
         dto.setCaRole(ca.getCaRole());
         dto.setCrlInformation(crlInformationToDTO(ca.getCrlInformation()));
+        dto.setDuration(ca.getDuration());
+        dto.setDurationOfIssuedCertificates(ca.getDurationOfIssuedCertificates());
         return dto;
     }
 
@@ -171,6 +173,8 @@ public class BeanToDTOConverter {
         dto.setCurrentIssued(crl.getCurrentIssued());
         dto.setNextIssued(crl.getNextIssued());
         dto.setCrlNumber(crl.getCrlNumber());
+        dto.setCronExpression(crl.getCronExpression());
+        dto.setFrequencyDescription(crl.getFrequencyDescription());
         if (crl.getCrlFilename() != null) {
             File file = new File(crl.getCrlFilename());
             if (file.exists())

@@ -4,10 +4,14 @@ import app.beans.CRLInformation;
 import app.beans.Certificate;
 import app.beans.CertificateAuthority;
 import app.beans.CertificateData;
+import app.dto.CertificateAuthorityDTO;
+import app.dto.CertificateDTO;
+import app.dto.TwoStrings;
 import app.exception.ActionNotPossibleException;
 import app.exception.EntityNotFoundException;
 import app.repository.CARepository;
 import app.service.CAService;
+import app.service.CRLService;
 import app.service.CertificateService;
 import app.util.*;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -22,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.math.BigInteger;
 import java.security.*;
@@ -42,11 +47,11 @@ public class CAServiceImpl implements CAService {
     @Autowired
     private CertificateService certificateService;
 
-    @Value("${task.defaultFrequency}")
-    private String defaultCronExpression;
+    @Autowired
+    private CRLService crlService;
 
-    @Value("${task.defaultFrequencyName}")
-    private String defaultFrequencyDescription;
+    @Value("${defaultRootDuration}")
+    private int defaultRootDuration;
 
     private static final String folder = "src" + File.separator + "main" + File.separator + "webapp" + File.separator + "certificates" + File.separator;
 
@@ -58,8 +63,10 @@ public class CAServiceImpl implements CAService {
     }
 
     @Override
-    public CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateData subjectData, CertificateAuthority.CARole role) {
+    public CertificateAuthority generateCertificateAuthority(CertificateAuthority issuer, CertificateAuthorityDTO caDTO) {
         try {
+            CertificateData subjectData = DTOToBeanConverter.certificateDataDTOToBean(caDTO.getCertificate().getCertificateData());
+
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
             builder = builder.setProvider("BC");
 
@@ -85,7 +92,10 @@ public class CAServiceImpl implements CAService {
             Date notBefore = new Date();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(notBefore);
-            calendar.add(Calendar.YEAR, 2); // Trajanje sertifikata 2 godine
+            if (issuer == null) // If this is root CA, use default duration from application.properties
+                calendar.add(Calendar.YEAR, defaultRootDuration);
+            else // Admin will specify the duriation
+                calendar.add(Calendar.YEAR, caDTO.getDuration());
             Date notAfter = calendar.getTime();
 
             X500Name issuerX500 = null;
@@ -151,10 +161,14 @@ public class CAServiceImpl implements CAService {
             newCA.setKeyStoreFileName(privateKeyCredentials.getKeyStoreFileName());
             newCA.setKeyStorePassword(privateKeyCredentials.getKeyStorePassword());
             newCA.setPrivateKeyPassword(privateKeyCredentials.getPrivateKeyPassword());
-            newCA.setCaRole(role);
+            newCA.setCaRole(caDTO.getCaRole());
             CRLInformation crl = new CRLInformation();
             crl.setCa(newCA);
+            crl.setFrequencyDescription(ParameterHelper.getDefaultFrequencyDescription());
+            crl.setCronExpression(ParameterHelper.getDefaultCron());
             newCA.setCrlInformation(crl);
+            if (caDTO.getCaRole() != CertificateAuthority.CARole.ROOT && caDTO.getCaRole() != CertificateAuthority.CARole.INTERMEDIATE)
+                newCA.setDurationOfIssuedCertificates(caDTO.getDurationOfIssuedCertificates());
 
             certificate.setCa(newCA);
 
@@ -169,11 +183,12 @@ public class CAServiceImpl implements CAService {
 
             CertificateAuthority savedCA = caRepository.save(newCA);
 
-
-
             savePrivateKeyToStore(savedCA, subjectKeyPair.getPrivate(), x509Certificate);
 
-            return savedCA;
+            // Start CRL generation
+            crlService.addCAToSchedule(savedCA);
+
+            return caRepository.findOne(savedCA.getId());
 
         } catch(OperatorCreationException e){
             e.printStackTrace();
@@ -191,7 +206,12 @@ public class CAServiceImpl implements CAService {
 
     @Override
     public CertificateAuthority generateRootCA(CertificateData data) {
-        return generateCertificateAuthority(null, data, CertificateAuthority.CARole.ROOT);
+        CertificateAuthorityDTO dto = new CertificateAuthorityDTO();
+        CertificateDTO cert = new CertificateDTO();
+        cert.setCertificateData(BeanToDTOConverter.certificateDataToDTO(data));
+        dto.setCertificate(cert);
+        dto.setCaRole(CertificateAuthority.CARole.ROOT);
+        return generateCertificateAuthority(null, dto);
     }
 
     @Override
@@ -208,6 +228,11 @@ public class CAServiceImpl implements CAService {
     }
 
     @Override
+    public List<CertificateAuthority> getAllCAs() {
+        return caRepository.findAll();
+    }
+
+    @Override
     public CertificateAuthority getRandomCAForUsage(CertificateData.CertUsage usage) throws ActionNotPossibleException {
         switch (usage) {
             case CA:
@@ -221,6 +246,11 @@ public class CAServiceImpl implements CAService {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public CertificateAuthority save(CertificateAuthority ca){
+        return caRepository.save(ca);
     }
 
     private CertificateAuthority getRandomCAWithRole(CertificateAuthority.CARole role) throws ActionNotPossibleException {

@@ -1,6 +1,7 @@
 package app.beans;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,8 +40,16 @@ public class CertificateAuthority extends AbstractEntity {
     @OneToOne(mappedBy = "ca", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     protected CRLInformation crlInformation;
 
+    @Column(name = "durationofissuedcertificates")
+    protected int durationOfIssuedCertificates; // duration in MONTHS
 
-    public CertificateAuthority() { }
+    @Column(name = "duration")
+    protected int duration; // duration of this CA's certificate in YEARS
+
+
+    public CertificateAuthority() {
+        issuedCertificates = new ArrayList<>();
+    }
 
     public CertificateAuthority getIssuer() {
         return issuer;
@@ -112,5 +121,21 @@ public class CertificateAuthority extends AbstractEntity {
 
     public void setCrlInformation(CRLInformation crlInformation) {
         this.crlInformation = crlInformation;
+    }
+
+    public int getDurationOfIssuedCertificates() {
+        return durationOfIssuedCertificates;
+    }
+
+    public void setDurationOfIssuedCertificates(int durationOfIssuedCertificates) {
+        this.durationOfIssuedCertificates = durationOfIssuedCertificates;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

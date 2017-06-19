@@ -71,6 +71,16 @@
                 controller: 'RevokeController',
                 controllerAs: 'revCtrl'
             })
+            .when('/changeFrequency/:id', {
+                templateUrl: 'static/html/frequency.html',
+                controller: 'FrequencyController',
+                controllerAs: 'freqCtrl'
+            })
+            .when('/changeFrequency', {
+                templateUrl: 'static/html/frequency.html',
+                controller: 'FrequencyController',
+                controllerAs: 'freqCtrl'
+            })
             .otherwise({
                 redirectTo: '/'
             });

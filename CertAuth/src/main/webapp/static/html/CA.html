@@ -42,6 +42,14 @@
         </div>
         <div class="row">
             <div class="col-md-6">
+                <label>CRL frequency: </label>
+            </div>
+            <div class="col-md-6">
+                <label>{{caCtrl.CA.crlInformation.frequencyDescription}}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
                 <label>Certificate: </label>
             </div>
             <div class="col-md-6">
@@ -56,6 +64,9 @@
                 </div>
                 <div class="col-md-offset1 col-md-3" ng-if="caCtrl.CA.certificate.status === 'VALID' || caCtrl.CA.certificate.status === 'ON_HOLD'">
                     <a href="/#/revoke/{{caCtrl.CA.certificate.id}}"><button type="button" class="btn btn-danger">Revoke certificate</button></a>
+                </div>
+                <div class="col-md-offset-1 col-md-3">
+                    <a href="/#/changeFrequency/{{caCtrl.CA.id}}"><button type="button" class="btn btn-default">Change CRL frequency</button></a>
                 </div>
             </div>
         </div>

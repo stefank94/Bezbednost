@@ -4,9 +4,15 @@ import app.beans.CRLInformation;
 import app.beans.Certificate;
 import app.beans.CertificateAuthority;
 import app.beans.Revocation;
+import app.exception.EntityNotFoundException;
+import app.exception.InvalidDataException;
+import app.repository.CARepository;
 import app.repository.CRLInformationRepository;
+import app.service.CAService;
 import app.service.CRLService;
+import app.task.TaskManager;
 import app.util.KeyStoreReader;
+import app.util.ParameterHelper;
 import app.util.X509Helper;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.*;
@@ -29,6 +35,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class CRLServiceImpl implements CRLService{
@@ -38,6 +45,12 @@ public class CRLServiceImpl implements CRLService{
 
     @Autowired
     private CRLInformationRepository crlInformationRepository;
+
+    @Autowired
+    private CAService caService;
+
+    @Autowired
+    private TaskManager taskManager;
 
     // -------------------------------------------------------
 
@@ -125,6 +138,33 @@ public class CRLServiceImpl implements CRLService{
     @Override
     public CRLInformation saveCRLInformation(CRLInformation crlInformation) {
         return crlInformationRepository.save(crlInformation);
+    }
+
+    @Override
+    public void addCAToSchedule(CertificateAuthority ca) {
+        taskManager.addToSchedule(ca);
+    }
+
+    @Override
+    public void addCAListToSchedule(List<CertificateAuthority> list) {
+        taskManager.addListToSchedule(list);
+    }
+
+    @Override
+    public void rescheduleCRLExecution(int id, String cronExp, String frequencyDescription) throws EntityNotFoundException, InvalidDataException {
+        CertificateAuthority ca = caService.findById(id);
+        taskManager.reschedule(ca, cronExp, frequencyDescription);
+    }
+
+    @Override
+    public void rescheduleCRLExecutionForAll(String cronExp, String frequencyDescription) throws InvalidDataException {
+        taskManager.rescheduleAll(cronExp, frequencyDescription);
+        ParameterHelper.setDefaultCronAndDescription(cronExp, frequencyDescription);
+    }
+
+    @Override
+    public void cancelExecution(CertificateAuthority ca) {
+        taskManager.removeFromSchedule(ca);
     }
 
 }

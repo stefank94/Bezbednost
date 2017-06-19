@@ -70,7 +70,7 @@ public class CertificateServiceImpl implements CertificateService {
             Date notBefore = new Date();
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(notBefore);
-            calendar.add(Calendar.YEAR, 2); // Trajanje sertifikata 2 godine
+            calendar.add(Calendar.MONTH, cA.getDurationOfIssuedCertificates()); // Duration from CA's specification
             Date notAfter = calendar.getTime();
 
             X500Name issuerX500 = X509Helper.makeX500Name(cA.getCertificate().getCertificateData());

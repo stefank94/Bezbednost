@@ -58,6 +58,32 @@
                 </select>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Duration: </label>
+            </div>
+            <div class="col-md-6">
+                <select class="form-control" ng-model="caCtrl.CA.duration">
+                    <option value="1">1 year</option>
+                    <option selected value="2">2 years</option>
+                    <option value="3">3 years</option>
+                    <option value="4">4 years</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" ng-if="caCtrl.CA.role !== 'INTERMEDIATE'">
+            <div class="col-md-6">
+                <label>Duration of issued certificates: </label>
+            </div>
+            <div class="col-md-6">
+                <select class="form-control" ng-model="caCtrl.CA.durationOfIssuedCertificates">
+                    <option value="3">3 months</option>
+                    <option value="6">6 months</option>
+                    <option selected value="12">1 year</option>
+                    <option value="24">2 years</option>
+                </select>
+            </div>
+        </div>
         <hr><br>
         <div class="row">
             <div class="col-md-4">
