@@ -58,7 +58,7 @@
                     <li ng-hide="loginCtrl.isAdmin()"><a href="/#/myCertificates">My certificates</a></li>
                     <li><a href="/#/caList">CA list</a></li>
                     <li ng-show="loginCtrl.isAdmin()"><a href="/#/requests">Submitted requests</a></li>
-                    <li><a href="/#/createCSR">Create CSR</a></li>
+                    <li ng-hide="loginCtrl.isAdmin()"><a href="/#/createCSR">Create CSR</a></li>
                     <li ng-show="loginCtrl.isAdmin()"><a href="/#/changeFrequency">Change CRL frequency</a></li>
                     <li><a href="/#/profile" >Profile</a></li>
                     <li><div class="separator"></div></li>
