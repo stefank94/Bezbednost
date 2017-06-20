@@ -210,9 +210,10 @@ public class CertificateServiceImpl implements CertificateService {
             File file = new File(fileName);
             file.createNewFile();
             FileOutputStream os = new FileOutputStream(file, false);
-            os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
-            os.write(Base64.encodeBase64(cert.getEncoded(), true));
-            os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
+            //os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
+            //os.write(Base64.encodeBase64(cert.getEncoded(), true));
+            os.write(cert.getEncoded());
+            //os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
             os.close();
             return fileName;
         } catch(IOException e){
