@@ -8,6 +8,7 @@ import app.exception.InvalidDataException;
 import app.exception.NotPermittedException;
 import app.util.KeyStoreCredentials;
 
+import java.io.OutputStream;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -35,5 +36,7 @@ public interface CertificateService {
     int generateSerialNumber();
 
     boolean isValid(Certificate cert);
+
+    void getCerFileBySerialNumber(int serialNumber, OutputStream os) throws EntityNotFoundException;
 
 }

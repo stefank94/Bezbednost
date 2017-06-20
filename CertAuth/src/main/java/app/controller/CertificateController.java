@@ -69,4 +69,16 @@ public class CertificateController {
         return new ResponseEntity<>(BeanToDTOConverter.certificateToDTO(cert), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/cerFile/{serial}", method = RequestMethod.GET, produces = "application/pkix-cert")
+    public void getCerFile(@PathVariable("serial") int serial, HttpServletResponse response){
+        try {
+            certificateService.getCerFileBySerialNumber(serial, response.getOutputStream());
+            response.getOutputStream().flush();
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

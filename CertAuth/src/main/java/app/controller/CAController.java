@@ -55,4 +55,5 @@ public class CAController {
         return new ResponseEntity<>(BeanToDTOConverter.certificateAuthorityListToDTO(list), HttpStatus.OK);
     }
 
+
 }

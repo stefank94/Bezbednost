@@ -165,6 +165,27 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public void getCerFileBySerialNumber(int serialNumber, OutputStream os) throws EntityNotFoundException {
+        Certificate cert = certificateRepository.findBySerialNumber(serialNumber);
+        if (cert == null)
+            throw new EntityNotFoundException("Certificate not found by serial number: " + serialNumber);
+        try {
+            File file = new File(cert.getCerFileName());
+            FileInputStream fileInputStream = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            int count = 0;
+
+            while ((count = fileInputStream.read(buffer)) >= 0) {
+                os.write(buffer, 0, count);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public Certificate findOne(int id) throws EntityNotFoundException {
         Certificate cert = certificateRepository.findOne(id);
         if (cert == null)
