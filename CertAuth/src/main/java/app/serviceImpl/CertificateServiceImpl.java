@@ -92,7 +92,7 @@ public class CertificateServiceImpl implements CertificateService {
                     subjectX500,
                     subjectPublicKey);
 
-            X509Helper.makeExtensions(certGen, request.getCertificateData(), subjectPublicKey, cA, issuerX500);
+            X509Helper.makeExtensions(certGen, request.getCertificateData(), subjectPublicKey, cA, issuerX500, subjectX500);
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
@@ -110,6 +110,8 @@ public class CertificateServiceImpl implements CertificateService {
             certificate.setValidFrom(notBefore);
             certificate.setValidTo(notAfter);
             certificate.getCertificateData().setSerialNumber(randomNumber);
+
+            certificateDataRepository.save(certificate.getCertificateData());
 
             // Save the certificate in a .cer file
             String fileName = writeCerFile(x509Certificate, randomNumber);

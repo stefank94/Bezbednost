@@ -1,10 +1,7 @@
 package app.util;
 
 import app.beans.*;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -73,7 +70,7 @@ public class X509Helper {
         return null;
     }
 
-    public static void makeExtensions(X509v3CertificateBuilder builder, CertificateData data, PublicKey publicKey, CertificateAuthority issuer, X500Name issuerName){
+    public static void makeExtensions(X509v3CertificateBuilder builder, CertificateData data, PublicKey publicKey, CertificateAuthority issuer, X500Name issuerName, X500Name subjectX500){
         try {
             // subject key identifier
             SubjectKeyIdentifier ski = createSubjectKeyIdentifier(publicKey);
@@ -87,7 +84,31 @@ public class X509Helper {
                 // extended key usage
                 builder.addExtension(Extension.extendedKeyUsage, false, makeExtendedKeyUsage(data));
             }
-                //TODO: authority information access
+            // subject alternative name
+            GeneralName generalName = new GeneralName(GeneralName.dNSName, data.getCommonName());
+            GeneralNames generalNames = new GeneralNames(generalName);
+            builder.addExtension(Extension.subjectAlternativeName, false, generalNames);
+            if (data.isCA()){
+                // CRL distribution point
+                List<DistributionPoint> list = new ArrayList<>();
+                GeneralName gn2 = new GeneralName(GeneralName.uniformResourceIdentifier,  new DERIA5String("https://localhost:9000/crl/" + data.getSerialNumber() + ".crl"));
+                GeneralName gn1 = new GeneralName(GeneralName.uniformResourceIdentifier,  new DERIA5String("https://localhost:9000/api/crl/" + data.getSerialNumber()));
+                GeneralNames gns = new GeneralNames(new GeneralName[] {gn1, gn2});
+                DistributionPointName distributionPointName = new DistributionPointName(gns);
+                GeneralName issuerGN = new GeneralName(subjectX500);
+                DistributionPoint point = new DistributionPoint(distributionPointName, new ReasonFlags(ReasonFlags.unused), null);
+                DistributionPoint[] points = new DistributionPoint[1];
+                points[0] = point;
+                CRLDistPoint crlDistPoint = new CRLDistPoint(points);
+                builder.addExtension(Extension.cRLDistributionPoints, false, crlDistPoint);
+            }
+            if (issuer != null){
+                // authority information access
+                GeneralName gn = new GeneralName(GeneralName.uniformResourceIdentifier, new DERIA5String("https://localhost:9000/certificates/" + issuer.getCertificate().getCertificateData().getSerialNumber() + ".cer"));
+                AccessDescription accessDescription = new AccessDescription(AccessDescription.id_ad_caIssuers, gn);
+                AuthorityInformationAccess authorityInformationAccess = new AuthorityInformationAccess(accessDescription);
+                builder.addExtension(Extension.authorityInfoAccess, false, authorityInformationAccess);
+            }
 
         } catch (CertIOException e) {
             e.printStackTrace();

@@ -143,6 +143,7 @@ public class CAServiceImpl implements CAService {
             subjectData.setPublicKey(Base64Utility.encode(subjectKeyPair.getPublic().getEncoded()));
             subjectData.setCA(true);
             subjectData.setCertUsage(CertificateData.CertUsage.CA);
+            subjectData.setSerialNumber(randomNumber);
             if (subjectData.getKeyAlgorithm() == null || subjectData.getKeyAlgorithm().equals(""))
                 subjectData.setKeyAlgorithm("RSA");
 
@@ -154,7 +155,7 @@ public class CAServiceImpl implements CAService {
                     subjectX500,
                     subjectKeyPair.getPublic());
 
-            X509Helper.makeExtensions(certGen, subjectData, subjectKeyPair.getPublic(), issuer, issuerX500);
+            X509Helper.makeExtensions(certGen, subjectData, subjectKeyPair.getPublic(), issuer, issuerX500, subjectX500);
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
@@ -162,7 +163,7 @@ public class CAServiceImpl implements CAService {
 
             X509Certificate x509Certificate = certConverter.getCertificate(certHolder);
 
-            subjectData.setSerialNumber(randomNumber);
+
             CertificateData savedSubjectData = certificateDataRepository.save(subjectData);
 
             Certificate certificate = new Certificate();
@@ -262,6 +263,7 @@ public class CAServiceImpl implements CAService {
             dataDTO.setCommonName("Intermediate No. 1");
             dataDTO.setGivenName("Inter");
             dataDTO.setSurname("mediate");
+            dataDTO.setCA(true);
             certDTO.setCertificateData(dataDTO);
             caDTO.setCertificate(certDTO);
             CertificateAuthority ca = generateCertificateAuthority(root, caDTO);
