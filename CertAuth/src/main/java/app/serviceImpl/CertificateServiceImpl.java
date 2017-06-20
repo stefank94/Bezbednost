@@ -251,7 +251,7 @@ public class CertificateServiceImpl implements CertificateService {
                 cert.setRevocation(revocation);
 
                 Certificate savedCert = save(cert);
-                if (savedCert.getCertificateData().isCA())
+                if (savedCert.getCertificateData().isCA() && savedCert.getCa() != null)
                     revokeIssuedCertificates(savedCert.getCa(), revocationDTO.getInvalidityDate());
 
                 return savedCert;
@@ -322,7 +322,7 @@ public class CertificateServiceImpl implements CertificateService {
                 newRev.setCertificate(cert);
                 cert.setRevocation(newRev);
                 certificateRepository.save(cert);
-                if (cert.getCertificateData().isCA())
+                if (cert.getCertificateData().isCA() && cert.getCa() != null)
                     revokeIssuedCertificates(cert.getCa(), invalidityDate);
             }
         }

@@ -30,6 +30,8 @@
                         that.loggedInUser = data.data;
                         if (that.loggedInUser.admin)
                             that.isAdmin = true;
+                        else
+                            that.isAdmin = false;
                         that.authenticated = true;
                     } else {
                         that.loggedInUser = null;
@@ -79,6 +81,7 @@
         }
 
         function logout(){
+            that.isAdmin = false;
             return $http.get(baseUrl + 'api/user/logout');
         }
 

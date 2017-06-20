@@ -26,6 +26,7 @@
         vm.register = register;
         vm.isAuthenticated = userService.isAuthenticated;
         vm.getLoggedInUser = userService.getLoggedInUser;
+        vm.isAdmin = userService.isAdmin;
 
         ///
 
