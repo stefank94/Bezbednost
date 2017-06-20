@@ -45,6 +45,8 @@ public class Initializer implements InitializingBean {
         // Add Bouncy Castle Provider
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
+        createFolders();
+
         if (initializeRootCA){
 
             if (caService.getRootCA() != null) { // Don't generate root CA if it already exists,
@@ -71,5 +73,17 @@ public class Initializer implements InitializingBean {
             adminService.create(admin);
         }
 
+    }
+
+    public void createFolders(){
+        File certificatesFolder = new File("src/main/webapp/certificates");
+        File keystoresFolder = new File("src/main/webapp/keystores");
+        File crlFolder = new File("src/main/webapp/crl");
+        if (!certificatesFolder.exists())
+            certificatesFolder.mkdir();
+        if (!keystoresFolder.exists())
+            keystoresFolder.mkdir();
+        if (!crlFolder.exists())
+            crlFolder.mkdir();
     }
 }
