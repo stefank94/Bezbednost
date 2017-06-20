@@ -104,7 +104,7 @@ public class X509Helper {
             }
             if (issuer != null){
                 // authority information access
-                GeneralName gn = new GeneralName(GeneralName.uniformResourceIdentifier, new DERIA5String("https://localhost:8080/certificates/" + issuer.getCertificate().getCertificateData().getSerialNumber() + ".cer"));
+                GeneralName gn = new GeneralName(GeneralName.uniformResourceIdentifier, new DERIA5String("https://localhost:9000/certificates/" + issuer.getCertificate().getCertificateData().getSerialNumber() + ".cer"));
                 //GeneralName gn = new GeneralName(GeneralName.uniformResourceIdentifier, new DERIA5String("https://localhost:8080/api/cert/cerFile/" + issuer.getCertificate().getCertificateData().getSerialNumber()));
                 AccessDescription accessDescription = new AccessDescription(AccessDescription.id_ad_caIssuers, gn);
 
