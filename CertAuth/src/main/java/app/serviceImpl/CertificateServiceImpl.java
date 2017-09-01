@@ -14,14 +14,14 @@ import app.repository.RevocationRepository;
 import app.service.CAService;
 import app.service.CertificateService;
 import app.util.*;
-import org.apache.tomcat.util.codec.binary.Base64;
+import app.x509.CertificateBuilder;
+import app.x509.NonCACertificateBuilder;
+import app.x509.X509Helper;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.crypto.params.RSAKeyParameters;
-import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -63,75 +63,25 @@ public class CertificateServiceImpl implements CertificateService {
     // -------------------------------------------------
 
     @Override
-    public Certificate generateCertificate(CertificateAuthority cA, CertificateSigningRequest request, KeyStoreCredentials keyStoreCredentials) {
-        try {
-            JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
-            builder = builder.setProvider("BC");
+    public Certificate generateCertificate(CertificateAuthority cA, CertificateSigningRequest request, KeyStoreCredentials keyStoreCredentials){
+        int serialNumber = generateSerialNumber();
+        CertificateBuilder builder = new NonCACertificateBuilder(request, serialNumber, cA);
 
-            KeyStoreReader keyStoreReader = new KeyStoreReader();
-            ContentSigner contentSigner = builder.build(keyStoreReader.readPrivateKey(cA));
+        builder.build();
+        Certificate certificate = builder.getCertificate();
+        X509Certificate x509Certificate = builder.getX509Certificate();
 
-            Date notBefore = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(notBefore);
-            calendar.add(Calendar.MONTH, cA.getDurationOfIssuedCertificates()); // Duration from CA's specification
-            Date notAfter = calendar.getTime();
+        CertificateData savedData = certificateDataRepository.save(certificate.getCertificateData());
 
-            X500Name issuerX500 = X509Helper.makeX500Name(cA.getCertificate().getCertificateData());
-            X500Name subjectX500 = X509Helper.makeX500Name(request.getCertificateData());
+        // Save the certificate in a .cer file
+        String fileName = writeCerFile(x509Certificate, serialNumber);
+        certificate.setCerFileName(fileName);
+        certificate.setCertificateData(savedData);
 
-            PublicKey subjectPublicKey = getPublicKey(request.getCertificateData().getPublicKey(),
-                    request.getCertificateData().getKeyAlgorithm());
+        if (keyStoreCredentials != null)
+            saveCertificateToKeyStore(keyStoreCredentials, x509Certificate);
 
-            int randomNumber = generateSerialNumber();
-
-            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerX500,
-                    new BigInteger(Integer.toString(randomNumber)),
-                    notBefore,
-                    notAfter,
-                    subjectX500,
-                    subjectPublicKey);
-
-            X509Helper.makeExtensions(certGen, request.getCertificateData(), subjectPublicKey, cA, issuerX500, subjectX500);
-
-            X509CertificateHolder certHolder = certGen.build(contentSigner);
-            JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
-            certConverter = certConverter.setProvider("BC");
-
-            X509Certificate x509Certificate = certConverter.getCertificate(certHolder);
-
-            request.setState(CertificateSigningRequest.CSRState.APPROVED);
-            CertificateSigningRequest req = csrRepository.save(request);
-
-            Certificate certificate = new Certificate();
-            certificate.setCertificateData(req.getCertificateData());
-            certificate.setUser(request.getUser());
-            certificate.setIssuer(cA);
-            certificate.setValidFrom(notBefore);
-            certificate.setValidTo(notAfter);
-            certificate.getCertificateData().setSerialNumber(randomNumber);
-
-            certificateDataRepository.save(certificate.getCertificateData());
-
-            // Save the certificate in a .cer file
-            String fileName = writeCerFile(x509Certificate, randomNumber);
-            certificate.setCerFileName(fileName);
-
-            if (keyStoreCredentials != null)
-                saveCertificateToKeyStore(keyStoreCredentials, x509Certificate);
-
-            Certificate saved = certificateRepository.save(certificate);
-
-            return saved;
-
-        } catch (OperatorCreationException e){
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
+        return certificateRepository.save(certificate);
     }
 
     private void saveCertificateToKeyStore(KeyStoreCredentials keyStoreCredentials, X509Certificate certificate){
@@ -327,22 +277,6 @@ public class CertificateServiceImpl implements CertificateService {
                     revokeIssuedCertificates(cert.getCa(), invalidityDate);
             }
         }
-    }
-
-    private PublicKey getPublicKey(String publicKeyString, String keyAlgorithm){
-        try {
-            byte[] publicKey = Base64Utility.decode(publicKeyString);
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey);
-            KeyFactory keyFactory = KeyFactory.getInstance(keyAlgorithm);
-            return keyFactory.generatePublic(spec);
-        } catch (IOException e){
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 }

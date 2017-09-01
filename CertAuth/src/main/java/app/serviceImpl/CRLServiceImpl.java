@@ -13,7 +13,7 @@ import app.service.CRLService;
 import app.task.TaskManager;
 import app.util.KeyStoreReader;
 import app.util.ParameterHelper;
-import app.util.X509Helper;
+import app.x509.X509Helper;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.X509CRLHolder;
@@ -33,7 +33,6 @@ import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

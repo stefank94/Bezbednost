@@ -10,7 +10,7 @@ import java.util.Date;
 public class CRLInformation extends AbstractEntity {
 
     @OneToOne
-    @JoinColumn(name = "ca", referencedColumnName = "id")
+    @JoinColumn(name = "issuer", referencedColumnName = "id")
     protected CertificateAuthority ca;
 
     @Column(name = "currentissued")

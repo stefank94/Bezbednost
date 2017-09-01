@@ -115,7 +115,7 @@ public class BeanToDTOConverter {
             return null;
         CertificateSigningRequestDTO dto = new CertificateSigningRequestDTO();
         buildAbstractEntityDTO(dto, request);
-        dto.setUser(request.getUser().getEmail());
+        dto.setUser(request.getUser() != null ? request.getUser().getEmail() : null);
         dto.setState(request.getState());
         dto.setCertificateData(certificateDataToDTO(request.getCertificateData()));
         dto.setDate(request.getDate());
