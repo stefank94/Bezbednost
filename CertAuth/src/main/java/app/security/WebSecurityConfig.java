@@ -20,7 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/user/logged", "/api/user/register" , "/webjars/**", "/static/**", "/",
                 "/certificates/**", "/crl/**", "/api/crl/pliz", "/api/cert/cerFile/**").permitAll()
             .antMatchers("/api/issuer/create", "/api/request/getAllSubmittedRequests",
-                    "/api/request/approve", "/api/request/reject", "/api/crl/**").hasAuthority("ADMIN")
+                    "/api/request/approve", "/api/request/reject", "/api/crl/**", "/api/admin/registration")
+                    .hasAuthority("ADMIN")
             .anyRequest().authenticated()
             .and().exceptionHandling()
             .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))

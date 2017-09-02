@@ -19,7 +19,8 @@
             logout: logout,
             getUser: getUser,
             isAdmin: isAdmin,
-            changePassword: changePassword
+            changePassword: changePassword,
+            registerAdmin: registerAdmin
         };
         ////////////////
 
@@ -91,6 +92,11 @@
 
         function changePassword(changePass){
             return $http.put(baseUrl + 'api/user/changePassword', changePass);
+        }
+
+        function registerAdmin(admin){
+            console.log(admin);
+            return $http.post(baseUrl + 'api/admin/registration', admin);
         }
 
     });

@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="row">
+            <h3>Register new Admin</h3>
+        </div>
+        <br><hr><br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Email: </label>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" ng-model="adminCtrl.admin.email">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Password: </label>
+            </div>
+            <div class="col-md-6">
+                <input type="password" class="form-control" ng-model="adminCtrl.admin.password">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Repeat password: </label>
+            </div>
+            <div class="col-md-6">
+                <input type="password" class="form-control" ng-model="adminCtrl.admin.repeatPassword">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <button type="button" class="btn btn-success" ng-click="adminCtrl.register()">Register</button>
+        </div>
+    </div>
+</div>

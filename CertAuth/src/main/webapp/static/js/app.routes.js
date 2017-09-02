@@ -81,6 +81,11 @@
                 controller: 'FrequencyController',
                 controllerAs: 'freqCtrl'
             })
+            .when('/registerAdmin', {
+                templateUrl: 'static/html/registerAdmin.html',
+                controller: 'RegisterAdminController',
+                controllerAs: 'adminCtrl'
+            })
             .otherwise({
                 redirectTo: '/'
             });

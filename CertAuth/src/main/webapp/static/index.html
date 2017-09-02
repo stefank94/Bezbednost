@@ -38,6 +38,7 @@
         <script src="static/js/controllers/createCSR.controller.js"></script>
         <script src="static/js/controllers/revoke.controller.js"></script>
         <script src="static/js/controllers/frequency.controller.js"></script>
+        <script src="static/js/controllers/registerAdmin.controller.js"></script>
 
         <script src="static/js/services/user.service.js"></script>
         <script src="static/js/services/ca.service.js"></script>
@@ -60,6 +61,7 @@
                     <li ng-show="loginCtrl.isAdmin()"><a href="/#/requests">Submitted requests</a></li>
                     <li ng-hide="loginCtrl.isAdmin()"><a href="/#/createCSR">Create CSR</a></li>
                     <li ng-show="loginCtrl.isAdmin()"><a href="/#/changeFrequency">Change CRL frequency</a></li>
+                    <li ng-show="loginCtrl.isAdmin()"><a href="/#/registerAdmin">Register admin</a></li>
                     <li><a href="/#/profile" >Profile</a></li>
                     <li><div class="separator"></div></li>
                     <li ng-click="loginCtrl.logout()"><a class="navbar-brand">Log out</a></li>
