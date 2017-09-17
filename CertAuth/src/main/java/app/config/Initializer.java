@@ -47,13 +47,14 @@ public class Initializer implements InitializingBean {
 
         createFolders();
 
+        // Add all CAs to CRL generation scheduler.
+        List<CertificateAuthority> all = caService.getAllCAs();
+        crlService.addCAListToSchedule(all);
+
         if (initializeRootCA){
 
-            if (caService.getRootCA() != null) { // Don't generate root CA if it already exists,
-                List<CertificateAuthority> all = caService.getAllCAs();
-                crlService.addCAListToSchedule(all); // but add all CAs to CRL generation scheduler.
+            if (caService.getRootCA() != null)  // Don't generate root CA if it already exists,
                 return;
-            }
 
             try {
                 FileUtils.cleanDirectory(new File(FOLDER + "certificates" + File.separator));
